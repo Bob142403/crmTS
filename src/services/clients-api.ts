@@ -1,4 +1,5 @@
 import Client from "../types/Client";
+import CreateClient from "../types/CreateClient";
 
 const baseURL = "http://localhost:3000/clients";
 
@@ -25,7 +26,7 @@ export const clientsApi = {
       client.json()
     );
   },
-  addClient: async (client: Client) => {
+  addClient: async (client: CreateClient) => {
     await fetch(baseURL, {
       method: "POST",
       headers: {

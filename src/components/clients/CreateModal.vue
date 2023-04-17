@@ -107,6 +107,7 @@ import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
 import { clientsApi } from "../../services/clients-api";
 import Client from "../../types/Client";
+import CreateClient from "../../types/CreateClient";
 
 function closeModal() {
   isShowCreateModal.value = false;
@@ -133,7 +134,7 @@ function ClearAll() {
 }
 
 async function AddItem() {
-  const client: Client = {
+  const client: CreateClient = {
     address: address.value,
     first_name: first_name.value,
     last_name: last_name.value,
