@@ -12,33 +12,29 @@
             <th scope="col" class="px-6 py-3">First Name</th>
             <th scope="col" class="px-6 py-3">Last Name</th>
             <th scope="col" class="px-6 py-3">Email</th>
-            <th scope="col" class="px-6 py-3">Adress</th>
-            <th scope="col" class="px-6 py-3">Phone Number</th>
             <th scope="col" class="px-6 py-3">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="arr in data"
-            :key="arr.id"
+            v-for="user in users"
+            :key="user.id"
             class="bg-white border-b dark:bg-gray-900 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600"
           >
             <th
               scope="row"
               class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
             >
-              {{ arr["first_name"] }}
+              {{ user["first_name"] }}
             </th>
 
-            <td class="px-6 py-4">{{ arr["last_name"] }}</td>
-            <td class="px-6 py-4">{{ arr["email"] }}</td>
-            <td class="px-6 py-4">{{ arr["address"] }}</td>
-            <td class="px-6 py-4">{{ arr["phone_number"] }}</td>
+            <td class="px-6 py-4">{{ user["last_name"] }}</td>
+            <td class="px-6 py-4">{{ user["email"] }}</td>
             <td class="px-6 py-4">
               <div class="flex items-center">
-                <EditModal :clientId="arr.id" />
-                <DeleteModal :clientId="arr.id" />
-                <WatchModal :clientId="arr.id" />
+                <EditModal :userId="user.id" />
+                <DeleteModal :userId="user.id" />
+                <WatchModal :userId="user.id" />
               </div>
             </td>
           </tr>
@@ -49,18 +45,18 @@
 </template>
 
 <script setup lang="ts">
-import CreateModal from "../../components/clients/CreateModal.vue";
-import EditModal from "../../components/clients/EditModal.vue";
-import DeleteModal from "../../components/clients/DeleteModal.vue";
-import WatchModal from "../../components/clients/WatchModal.vue";
+import CreateModal from "../../components/users/CreateModal.vue";
+import EditModal from "../../components/users/EditModal.vue";
+import DeleteModal from "../../components/users/DeleteModal.vue";
+import WatchModal from "../../components/users/WatchModal.vue";
 import { computed } from "vue";
 import { useStore } from "../../store/store";
 
 const store = useStore();
 
-store.dispatch("fetchClientsData");
+store.dispatch("fetchUsersData");
 
-const data = computed(() => store.getters.getClients);
+const users = computed(() => store.state.usersModule.users);
 </script>
 
 <style></style>

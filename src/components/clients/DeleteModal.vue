@@ -69,7 +69,7 @@ function showModal() {
 }
 
 async function deleteData() {
-  store.commit("delData", props.clientId);
+  store.commit("delClientById", props.clientId);
   clientsApi.deleteClientById(props.clientId);
   closeModal();
 }

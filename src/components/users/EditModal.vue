@@ -3,7 +3,7 @@
   <a
     href="#"
     class="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-2"
-    @click.stop="showModal"
+    @click="showModal"
     >Edit</a
   >
   <Modal v-if="isShowEditModal" @close="closeModal">
@@ -58,37 +58,6 @@
             required
           />
         </div>
-        <div>
-          <label
-            for="your_address"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Your Address</label
-          >
-          <input
-            name="Your Address"
-            id="your_address"
-            v-model="address"
-            placeholder="N.Karaboeva 24/3"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            for="phone"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Phone number</label
-          >
-          <input
-            type="tel"
-            id="phone"
-            v-model="phone_number"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="123-45-678"
-            required
-          />
-        </div>
       </div>
     </template>
     <template #footer>
@@ -106,10 +75,10 @@
 import { ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
-import { clientsApi } from "../../services/clients-api";
+import { usersApi } from "../../services/users-api";
 
 interface Props {
-  clientId: number;
+  userId: number;
 }
 
 const store = useStore();
@@ -117,19 +86,15 @@ const store = useStore();
 const props = defineProps<Props>();
 
 const isShowEditModal = ref(false);
-const address = ref("");
 const first_name = ref("");
 const last_name = ref("");
-const phone_number = ref("");
 const email = ref("");
 
 async function fetchData() {
-  clientsApi.getClientById(props.clientId).then((res) => {
-    address.value = res.address;
+  await usersApi.getUserById(props.userId).then((res) => {
     first_name.value = res.first_name;
     last_name.value = res.last_name;
     email.value = res.email;
-    phone_number.value = res.phone_number;
   });
 }
 
@@ -144,15 +109,13 @@ function showModal() {
 
 async function EditTask() {
   const obj = {
-    address: address.value,
     first_name: first_name.value,
     last_name: last_name.value,
-    phone_number: phone_number.value,
-    id: props.clientId,
+    id: props.userId,
     email: email.value,
   };
-  clientsApi.changeClientById(props.clientId, obj);
-  store.commit("updateClientById", obj);
+  usersApi.changeUserById(props.userId, obj);
+  store.commit("updateUserById", obj);
   closeModal();
 }
 </script>

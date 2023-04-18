@@ -148,12 +148,10 @@ async function AddItem() {
     phone_number.value &&
     email.value
   ) {
-    clientsApi.addClient(client);
+    await clientsApi.addClient(client);
 
-    store.dispatch("fetchData");
+    store.dispatch("fetchClientsData");
     closeModal();
   }
 }
 </script>
-
-<style></style>

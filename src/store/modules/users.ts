@@ -1,0 +1,43 @@
+import { Module, Store } from "vuex";
+import { State } from "../store";
+import User from "../../types/User";
+import { usersApi } from "../../services/users-api";
+
+export interface UsersState {
+  users: User[];
+}
+
+export const usersModule: Module<UsersState, State> = {
+  actions: {
+    async fetchUsersData(ctx) {
+      usersApi.getUsers().then((res) => {
+        ctx.commit("setUsersData", res);
+      });
+    },
+  },
+  state: () => ({ users: [] }),
+  mutations: {
+    setUsersData(state, newData: User[]) {
+      state.users = newData;
+    },
+    addUser(state, user: User) {
+      state.users.push(user);
+      console.log(state.users);
+    },
+    updateUserById(state, obj: User) {
+      state.users = state.users.map((elem) => {
+        if (elem.id === obj.id) {
+          return { ...obj };
+        } else return { ...elem };
+      });
+    },
+    delUserById(state, userId: number) {
+      state.users = state.users.filter((user) => user.id !== userId);
+    },
+  },
+  getters: {
+    getUsers: (state) => state.users,
+    getUserById: (state) => (userId: number) =>
+      state.users.find((user) => user.id === userId),
+  },
+};

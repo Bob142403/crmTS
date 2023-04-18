@@ -9,7 +9,7 @@ export interface ClientsState {
 
 export const clientsModule: Module<ClientsState, State> = {
   actions: {
-    async fetchData(ctx) {
+    async fetchClientsData(ctx) {
       await clientsApi.getClients().then((clients) => {
         ctx.commit("setData", clients);
       });
@@ -26,14 +26,15 @@ export const clientsModule: Module<ClientsState, State> = {
   mutations: {
     setData(state, newData: Client[]) {
       state.data = newData;
+      console.log(state.data);
     },
-    addData(state, dt: Client) {
+    addClient(state, dt: Client) {
       state.data.push(dt);
     },
-    delData(state, id: number) {
+    delClientById(state, id: number) {
       state.data = state.data.filter((elem) => elem.id !== id);
     },
-    updateDataById(state, obj: Client) {
+    updateClientById(state, obj: Client) {
       state.data = state.data.map((elem) => {
         if (elem.id === obj.id) {
           return { ...obj };

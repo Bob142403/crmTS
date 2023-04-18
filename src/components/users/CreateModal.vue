@@ -1,12 +1,11 @@
 <template>
-  <!-- Modal toggle -->
-  <a
-    href="#"
-    class="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-2"
-    @click.stop="showModal"
-    >Edit</a
+  <button
+    @click="showModal"
+    class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
   >
-  <Modal v-if="isShowEditModal" @close="closeModal">
+    Add Task
+  </button>
+  <Modal v-if="isShowCreateModal" @close="closeModal">
     <template #header>
       <div class="flex items-center text-lg">Modal</div>
     </template>
@@ -58,45 +57,14 @@
             required
           />
         </div>
-        <div>
-          <label
-            for="your_address"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Your Address</label
-          >
-          <input
-            name="Your Address"
-            id="your_address"
-            v-model="address"
-            placeholder="N.Karaboeva 24/3"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            for="phone"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Phone number</label
-          >
-          <input
-            type="tel"
-            id="phone"
-            v-model="phone_number"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="123-45-678"
-            required
-          />
-        </div>
       </div>
     </template>
     <template #footer>
       <button
-        @click="EditTask"
+        @click="AddItem"
         class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
-        Save Item
+        Add Item
       </button>
     </template>
   </Modal>
@@ -106,53 +74,40 @@
 import { ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
-import { clientsApi } from "../../services/clients-api";
-
-interface Props {
-  clientId: number;
-}
-
-const store = useStore();
-
-const props = defineProps<Props>();
-
-const isShowEditModal = ref(false);
-const address = ref("");
-const first_name = ref("");
-const last_name = ref("");
-const phone_number = ref("");
-const email = ref("");
-
-async function fetchData() {
-  clientsApi.getClientById(props.clientId).then((res) => {
-    address.value = res.address;
-    first_name.value = res.first_name;
-    last_name.value = res.last_name;
-    email.value = res.email;
-    phone_number.value = res.phone_number;
-  });
-}
-
-fetchData();
+import { usersApi } from "../../services/users-api";
+import CreateUser from "../../types/CreateUser";
 
 function closeModal() {
-  isShowEditModal.value = false;
+  isShowCreateModal.value = false;
+  ClearAll();
 }
 function showModal() {
-  isShowEditModal.value = true;
+  isShowCreateModal.value = true;
 }
 
-async function EditTask() {
-  const obj = {
-    address: address.value,
+const isShowCreateModal = ref(false);
+const first_name = ref("");
+const last_name = ref("");
+const email = ref("");
+const store = useStore();
+
+function ClearAll() {
+  first_name.value = "";
+  last_name.value = "";
+  email.value = "";
+}
+
+async function AddItem() {
+  const user: CreateUser = {
     first_name: first_name.value,
     last_name: last_name.value,
-    phone_number: phone_number.value,
-    id: props.clientId,
     email: email.value,
   };
-  clientsApi.changeClientById(props.clientId, obj);
-  store.commit("updateClientById", obj);
-  closeModal();
+  if (first_name.value && last_name.value && email.value) {
+    await usersApi.addUser(user);
+
+    store.dispatch("fetchUsersData");
+    closeModal();
+  }
 }
 </script>
