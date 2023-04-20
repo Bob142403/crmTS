@@ -103,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
 import { clientsApi } from "../../services/clients-api";
@@ -116,24 +116,13 @@ const store = useStore();
 
 const props = defineProps<Props>();
 
+const client = computed(() => store.getters.getClientById(props.clientId));
 const isShowEditModal = ref(false);
-const address = ref("");
-const first_name = ref("");
-const last_name = ref("");
-const phone_number = ref("");
-const email = ref("");
-
-async function fetchData() {
-  clientsApi.getClientById(props.clientId).then((res) => {
-    address.value = res.address;
-    first_name.value = res.first_name;
-    last_name.value = res.last_name;
-    email.value = res.email;
-    phone_number.value = res.phone_number;
-  });
-}
-
-fetchData();
+const address = ref(client.value.address);
+const first_name = ref(client.value.first_name);
+const last_name = ref(client.value.last_name);
+const phone_number = ref(client.value.phone_number);
+const email = ref(client.value.email);
 
 function closeModal() {
   isShowEditModal.value = false;

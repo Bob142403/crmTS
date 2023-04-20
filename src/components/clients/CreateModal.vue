@@ -150,7 +150,7 @@ async function AddItem() {
   ) {
     await clientsApi.addClient(client);
 
-    store.dispatch("fetchClientsData");
+    store.dispatch("fetchClients");
     closeModal();
   }
 }

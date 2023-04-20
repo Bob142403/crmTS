@@ -106,7 +106,7 @@ async function AddItem() {
   if (first_name.value && last_name.value && email.value) {
     await usersApi.addUser(user);
 
-    store.dispatch("fetchUsersData");
+    store.dispatch("fetchUsers");
     closeModal();
   }
 }

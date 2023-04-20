@@ -54,7 +54,7 @@ import { useStore } from "../../store/store";
 
 const store = useStore();
 
-store.dispatch("fetchUsersData");
+store.dispatch("fetchUsers");
 
 const users = computed(() => store.state.usersModule.users);
 </script>

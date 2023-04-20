@@ -9,25 +9,25 @@ export interface UsersState {
 
 export const usersModule: Module<UsersState, State> = {
   actions: {
-    async fetchUsersData(ctx) {
+    async fetchUsers(ctx) {
       usersApi.getUsers().then((res) => {
-        ctx.commit("setUsersData", res);
+        ctx.commit("setUsers", res);
       });
     },
   },
   state: () => ({ users: [] }),
   mutations: {
-    setUsersData(state, newData: User[]) {
+    setUsers(state, newData: User[]) {
       state.users = newData;
     },
     addUser(state, user: User) {
       state.users.push(user);
       console.log(state.users);
     },
-    updateUserById(state, obj: User) {
+    updateUserById(state, user: User) {
       state.users = state.users.map((elem) => {
-        if (elem.id === obj.id) {
-          return { ...obj };
+        if (elem.id === user.id) {
+          return { ...user };
         } else return { ...elem };
       });
     },

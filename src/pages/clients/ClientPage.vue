@@ -58,7 +58,7 @@ import { useStore } from "../../store/store";
 
 const store = useStore();
 
-store.dispatch("fetchClientsData");
+store.dispatch("fetchClients");
 
 const data = computed(() => store.getters.getClients);
 </script>

@@ -9,9 +9,9 @@ export interface ClientsState {
 
 export const clientsModule: Module<ClientsState, State> = {
   actions: {
-    async fetchClientsData(ctx) {
+    async fetchClients(ctx) {
       await clientsApi.getClients().then((clients) => {
-        ctx.commit("setData", clients);
+        ctx.commit("setClient", clients);
       });
     },
   },
@@ -24,20 +24,20 @@ export const clientsModule: Module<ClientsState, State> = {
     getClients: (state) => state.data,
   },
   mutations: {
-    setData(state, newData: Client[]) {
+    setClient(state, newData: Client[]) {
       state.data = newData;
       console.log(state.data);
     },
-    addClient(state, dt: Client) {
-      state.data.push(dt);
+    addClient(state, client: Client) {
+      state.data.push(client);
     },
     delClientById(state, id: number) {
       state.data = state.data.filter((elem) => elem.id !== id);
     },
-    updateClientById(state, obj: Client) {
+    updateClientById(state, client: Client) {
       state.data = state.data.map((elem) => {
-        if (elem.id === obj.id) {
-          return { ...obj };
+        if (elem.id === client.id) {
+          return { ...client };
         } else return { ...elem };
       });
       console.log(state.data);
