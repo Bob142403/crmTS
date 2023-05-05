@@ -76,6 +76,7 @@ import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
 import { usersApi } from "../../services/users-api";
 import CreateUser from "../../types/CreateUser";
+import { useRouter } from "vue-router";
 
 function closeModal() {
   isShowCreateModal.value = false;
@@ -90,6 +91,7 @@ const first_name = ref("");
 const last_name = ref("");
 const email = ref("");
 const store = useStore();
+const router = useRouter();
 
 function ClearAll() {
   first_name.value = "";
@@ -104,9 +106,11 @@ async function AddItem() {
     email: email.value,
   };
   if (first_name.value && last_name.value && email.value) {
-    await usersApi.addUser(user);
+    const res = await (await usersApi.addUser(user)).json();
 
-    store.dispatch("fetchUsers");
+    if (res === "Token is not verified") {
+      router.push("/login");
+    } else store.dispatch("fetchUsers");
     closeModal();
   }
 }

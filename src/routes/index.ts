@@ -2,19 +2,32 @@ import { createRouter, createWebHistory } from "vue-router";
 import App from "../App.vue";
 import ClientPage from "../pages/clients/ClientPage.vue";
 import UsersPage from "../pages/users/UsersPage.vue";
+import SignInPage from "../pages/sign-in/SignInPage.vue";
+import HomePage from "../pages/HomePage.vue";
+import SignUpPage from "../pages/sign-up/SignUpPage.vue";
 
 const routes = [
   {
     path: "/",
-    component: App,
+    component: HomePage,
+    children: [
+      {
+        path: "/clients",
+        component: ClientPage,
+      },
+      {
+        path: "/users",
+        component: UsersPage,
+      },
+    ],
   },
   {
-    path: "/clients",
-    component: ClientPage,
+    path: "/login",
+    component: SignInPage,
   },
   {
-    path: "/users",
-    component: UsersPage,
+    path: "/registration",
+    component: SignUpPage,
   },
 ];
 

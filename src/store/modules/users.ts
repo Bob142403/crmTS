@@ -2,6 +2,7 @@ import { Module, Store } from "vuex";
 import { State } from "../store";
 import User from "../../types/User";
 import { usersApi } from "../../services/users-api";
+import { useRouter } from "vue-router";
 
 export interface UsersState {
   users: User[];
@@ -11,7 +12,9 @@ export const usersModule: Module<UsersState, State> = {
   actions: {
     async fetchUsers(ctx) {
       usersApi.getUsers().then((res) => {
-        ctx.commit("setUsers", res);
+        if (res === "Incorrect Token!") {
+        } else ctx.commit("setUsers", res);
+        console.log(res);
       });
     },
   },

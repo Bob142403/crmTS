@@ -51,12 +51,24 @@ import DeleteModal from "../../components/users/DeleteModal.vue";
 import WatchModal from "../../components/users/WatchModal.vue";
 import { computed } from "vue";
 import { useStore } from "../../store/store";
+import { usersApi } from "../../services/users-api";
+import { useRouter } from "vue-router";
 
 const store = useStore();
+const router = useRouter();
 
-store.dispatch("fetchUsers");
+usersApi.getUsers().then((res) => {
+  if (res === "Token is not verified") {
+    router.push("/login");
+  } else {
+    console.log(res);
+    store.commit("setUsers", res);
+  }
+});
 
-const users = computed(() => store.state.usersModule.users);
+const users = computed(() => {
+  return store.state.usersModule.users;
+});
 </script>
 
 <style></style>

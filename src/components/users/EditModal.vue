@@ -76,16 +76,18 @@ import { compile, computed, ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
 import { usersApi } from "../../services/users-api";
+import { useRouter } from "vue-router";
 
 interface Props {
   userId: number;
 }
 
 const store = useStore();
+const router = useRouter();
 
 const props = defineProps<Props>();
 
-const user = computed(() => store.getters.getUserById(props.userId))
+const user = computed(() => store.getters.getUserById(props.userId));
 const isShowEditModal = ref(false);
 const first_name = ref(user.value.first_name);
 const last_name = ref(user.value.last_name);
@@ -105,8 +107,9 @@ async function EditTask() {
     id: props.userId,
     email: email.value,
   };
-  usersApi.changeUserById(props.userId, obj);
-  store.commit("updateUserById", obj);
+  const res = await (await usersApi.changeUserById(props.userId, obj)).json();
+  if (res === "Token is not verified") router.push("/login");
+  else store.commit("updateUserById", obj);
   closeModal();
 }
 </script>

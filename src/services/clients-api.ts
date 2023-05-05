@@ -5,7 +5,12 @@ const baseURL = "http://localhost:3000/clients";
 
 export const clientsApi = {
   getClients: async () => {
-    return await fetch(baseURL).then((clients) => clients.json());
+    return await fetch(baseURL, {
+      method: "GET",
+      headers: {
+        Authorization: `${localStorage.getItem("token")}`,
+      },
+    }).then((clients) => clients.json());
   },
   deleteClientById: async (clientId: number) => {
     await fetch(`http://localhost:3000/clients/${clientId}`, {
