@@ -58,12 +58,8 @@ const store = useStore();
 const router = useRouter();
 
 usersApi.getUsers().then((res) => {
-  if (res === "Token is not verified") {
-    router.push("/login");
-  } else {
-    console.log(res);
-    store.commit("setUsers", res);
-  }
+  if (res === "Token is not verified") router.push("/login");
+  else store.commit("setUsers", res);
 });
 
 const users = computed(() => {

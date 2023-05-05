@@ -15,6 +15,9 @@ export const clientsApi = {
   deleteClientById: async (clientId: number) => {
     await fetch(`http://localhost:3000/clients/${clientId}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `${localStorage.getItem("token")}`,
+      },
     });
   },
   changeClientById: async (clientId: number, newData: Client) => {
@@ -22,20 +25,25 @@ export const clientsApi = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
+        Authorization: `${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(newData),
     });
   },
   getClientById: async (clientId: number) => {
-    return fetch(`http://localhost:3000/clients/${clientId}`).then((client) =>
-      client.json()
-    );
+    return fetch(`http://localhost:3000/clients/${clientId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `${localStorage.getItem("token")}`,
+      },
+    }).then((client) => client.json());
   },
   addClient: async (client: CreateClient) => {
     await fetch(baseURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
+        Authorization: `${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(client),
     });
