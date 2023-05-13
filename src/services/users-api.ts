@@ -46,4 +46,12 @@ export const usersApi = {
         Authorization: `${localStorage.getItem("token")}`,
       },
     }),
+  signUp: async (info: CreateUser) =>
+    await fetch("http://localhost:3000/sign-up", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(info),
+    }),
 };

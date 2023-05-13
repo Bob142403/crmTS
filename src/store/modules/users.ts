@@ -12,9 +12,7 @@ export const usersModule: Module<UsersState, State> = {
   actions: {
     async fetchUsers(ctx) {
       usersApi.getUsers().then((res) => {
-        if (res === "Incorrect Token!") {
-        } else ctx.commit("setUsers", res);
-        console.log(res);
+        ctx.commit("setUsers", res);
       });
     },
   },

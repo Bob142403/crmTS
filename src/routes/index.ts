@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import App from "../App.vue";
 import ClientPage from "../pages/clients/ClientPage.vue";
 import UsersPage from "../pages/users/UsersPage.vue";
 import SignInPage from "../pages/sign-in/SignInPage.vue";
 import HomePage from "../pages/HomePage.vue";
 import SignUpPage from "../pages/sign-up/SignUpPage.vue";
+import { store } from "../store/store";
 
 const routes = [
   {

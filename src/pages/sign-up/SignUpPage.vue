@@ -142,7 +142,7 @@ async function addUser() {
     password: password.value,
   };
   if (confirm_password.value === password.value) {
-    usersApi.addUser(user);
+    usersApi.signUp(user);
     router.push("/login");
   }
 }
