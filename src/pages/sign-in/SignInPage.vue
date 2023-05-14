@@ -105,7 +105,6 @@ async function submitINFO() {
 
   const ress = await res.json();
   if (ress.msg !== "User Not Found") {
-    console.log(ress.msg);
     localStorage.setItem("token", ress.msg);
     router.push("/");
   }
