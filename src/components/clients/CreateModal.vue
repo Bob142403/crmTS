@@ -108,6 +108,7 @@ import { useStore } from "../../store/store";
 import { clientsApi } from "../../services/clients-api";
 import Client from "../../types/Client";
 import CreateClient from "../../types/CreateClient";
+import { router } from "../../routes";
 
 function closeModal() {
   isShowCreateModal.value = false;
@@ -148,9 +149,11 @@ async function AddItem() {
     phone_number.value &&
     email.value
   ) {
-    await clientsApi.addClient(client);
+    await clientsApi
+      .addClient(client)
+      .then(() => store.dispatch("fetchClients"))
+      .catch((err) => router.push("/login"));
 
-    store.dispatch("fetchClients");
     closeModal();
   }
 }

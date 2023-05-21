@@ -11,7 +11,7 @@ export const clientsModule: Module<ClientsState, State> = {
   actions: {
     async fetchClients(ctx) {
       await clientsApi.getClients().then((clients) => {
-        ctx.commit("setClient", clients);
+        ctx.commit("setClient", clients.data);
       });
     },
   },
@@ -26,7 +26,6 @@ export const clientsModule: Module<ClientsState, State> = {
   mutations: {
     setClient(state, newData: Client[]) {
       state.data = newData;
-      console.log(state.data);
     },
     addClient(state, client: Client) {
       state.data.push(client);
@@ -40,7 +39,6 @@ export const clientsModule: Module<ClientsState, State> = {
           return { ...client };
         } else return { ...elem };
       });
-      console.log(state.data);
     },
   },
 };

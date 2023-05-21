@@ -125,6 +125,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { authApi } from "../../services/auth-api";
 import { usersApi } from "../../services/users-api";
 
 const router = useRouter();
@@ -142,8 +143,14 @@ async function addUser() {
     password: password.value,
   };
   if (confirm_password.value === password.value) {
-    usersApi.signUp(user);
-    router.push("/login");
+    await authApi
+      .signUp(user)
+      .then(() => {
+        router.push("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }
 </script>

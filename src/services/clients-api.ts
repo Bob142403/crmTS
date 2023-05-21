@@ -1,3 +1,4 @@
+import axios from "axios";
 import Client from "../types/Client";
 import CreateClient from "../types/CreateClient";
 
@@ -5,47 +6,14 @@ const baseURL = "http://localhost:3000/clients";
 
 export const clientsApi = {
   getClients: async () => {
-    return await fetch(baseURL, {
-      method: "GET",
-      headers: {
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-    }).then((clients) => clients.json());
+    return await axios.get(baseURL + "/list");
   },
-  deleteClientById: async (clientId: number) => {
-    await fetch(`http://localhost:3000/clients/${clientId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-    });
-  },
-  changeClientById: async (clientId: number, newData: Client) => {
-    await fetch(`http://localhost:3000/clients/${clientId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify(newData),
-    });
-  },
-  getClientById: async (clientId: number) => {
-    return fetch(`http://localhost:3000/clients/${clientId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-    }).then((client) => client.json());
-  },
-  addClient: async (client: CreateClient) => {
-    await fetch(baseURL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify(client),
-    });
-  },
+  deleteClientById: async (clientId: number) =>
+    await axios.delete(baseURL + `/delete-client/${clientId}`),
+  changeClientById: async (clientId: number, newData: Client) =>
+    await axios.put(baseURL + `/update-client/${clientId}`, newData),
+  getClientById: async (clientId: number) =>
+    await axios.get(baseURL + `/get-client/${clientId}`),
+  addClient: async (client: CreateClient) =>
+    await axios.post(baseURL + "/create-client", client),
 };

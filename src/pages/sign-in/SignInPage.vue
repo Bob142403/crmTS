@@ -86,29 +86,20 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { authApi } from "../../services/auth-api";
 
 const router = useRouter();
 const email = ref("");
 const password = ref("");
 
 async function submitINFO() {
-  /**
-   * TODO
-   */
-  const res = await fetch("http://localhost:3000/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-    },
-    body: JSON.stringify({ email: email.value, password: password.value }),
-  });
-
-  const ress = await res.json();
-  if (ress.msg !== "User Not Found") {
-    localStorage.setItem("token", ress.msg);
-    router.push("/");
-  }
-  email.value = "";
-  password.value = "";
+  await authApi
+    .signIn({ email: email.value, password: password.value })
+    .then((res) => {
+      localStorage.setItem("token", res.data);
+      router.push("/");
+      email.value = "";
+      password.value = "";
+    });
 }
 </script>

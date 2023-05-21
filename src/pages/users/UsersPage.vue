@@ -49,7 +49,8 @@ import CreateModal from "../../components/users/CreateModal.vue";
 import EditModal from "../../components/users/EditModal.vue";
 import DeleteModal from "../../components/users/DeleteModal.vue";
 import WatchModal from "../../components/users/WatchModal.vue";
-import { computed } from "vue";
+
+import { computed, onMounted } from "vue";
 import { useStore } from "../../store/store";
 import { usersApi } from "../../services/users-api";
 import { useRouter } from "vue-router";
@@ -57,14 +58,16 @@ import { useRouter } from "vue-router";
 const store = useStore();
 const router = useRouter();
 
-usersApi
-  .getUsers()
-  .then((res) => {
-    store.commit("setUsers", res);
-  })
-  .catch((err) => {
-    router.push("/login");
-  });
+onMounted(() => {
+  usersApi
+    .getUsers()
+    .then((res) => {
+      store.commit("setUsers", res.data);
+    })
+    .catch((err) => {
+      router.push("/login");
+    });
+});
 
 const users = computed(() => {
   return store.state.usersModule.users;

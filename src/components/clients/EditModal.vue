@@ -107,6 +107,7 @@ import { computed, ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
 import { clientsApi } from "../../services/clients-api";
+import { router } from "../../routes";
 
 interface Props {
   clientId: number;
@@ -140,8 +141,11 @@ async function EditTask() {
     id: props.clientId,
     email: email.value,
   };
-  clientsApi.changeClientById(props.clientId, obj);
-  store.commit("updateClientById", obj);
+  await clientsApi
+    .changeClientById(props.clientId, obj)
+    .then(() => store.commit("updateClientById", obj))
+    .catch((err) => router.push("/login"));
+
   closeModal();
 }
 </script>

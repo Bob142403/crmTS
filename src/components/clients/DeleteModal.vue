@@ -48,6 +48,7 @@
 <script setup lang="ts">
 import { Modal } from "flowbite-vue";
 import { ref } from "vue";
+import { router } from "../../routes";
 import { clientsApi } from "../../services/clients-api";
 import { useStore } from "../../store/store";
 
@@ -69,8 +70,11 @@ function showModal() {
 }
 
 async function deleteData() {
-  store.commit("delClientById", props.clientId);
-  clientsApi.deleteClientById(props.clientId);
+  await clientsApi
+    .deleteClientById(props.clientId)
+    .then(() => store.commit("delClientById", props.clientId))
+    .catch((err) => router.push("/login"));
+
   closeModal();
 }
 </script>

@@ -53,7 +53,8 @@ import CreateModal from "../../components/clients/CreateModal.vue";
 import EditModal from "../../components/clients/EditModal.vue";
 import DeleteModal from "../../components/clients/DeleteModal.vue";
 import WatchModal from "../../components/clients/WatchModal.vue";
-import { computed } from "vue";
+
+import { computed, onMounted } from "vue";
 import { useStore } from "../../store/store";
 import { clientsApi } from "../../services/clients-api";
 import { useRouter } from "vue-router";
@@ -61,12 +62,16 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const store = useStore();
 
-clientsApi
-  .getClients()
-  .then((res) => {
-    store.dispatch("fetchClients");
-  })
-  .catch(() => router.push("/login"));
+onMounted(() => {
+  clientsApi
+    .getClients()
+    .then((res) => {
+      store.commit("setClient", res.data);
+    })
+    .catch((err) => {
+      router.push("/login");
+    });
+});
 
 const data = computed(() => store.getters.getClients);
 </script>
