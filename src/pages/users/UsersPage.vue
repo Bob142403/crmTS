@@ -57,10 +57,14 @@ import { useRouter } from "vue-router";
 const store = useStore();
 const router = useRouter();
 
-usersApi.getUsers().then((res) => {
-  if (res === "Token is not verified") router.push("/login");
-  else store.commit("setUsers", res);
-});
+usersApi
+  .getUsers()
+  .then((res) => {
+    store.commit("setUsers", res);
+  })
+  .catch((err) => {
+    router.push("/login");
+  });
 
 const users = computed(() => {
   return store.state.usersModule.users;

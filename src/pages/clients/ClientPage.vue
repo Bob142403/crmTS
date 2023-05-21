@@ -55,10 +55,18 @@ import DeleteModal from "../../components/clients/DeleteModal.vue";
 import WatchModal from "../../components/clients/WatchModal.vue";
 import { computed } from "vue";
 import { useStore } from "../../store/store";
+import { clientsApi } from "../../services/clients-api";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const store = useStore();
 
-store.dispatch("fetchClients");
+clientsApi
+  .getClients()
+  .then((res) => {
+    store.dispatch("fetchClients");
+  })
+  .catch(() => router.push("/login"));
 
 const data = computed(() => store.getters.getClients);
 </script>

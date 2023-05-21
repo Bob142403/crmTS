@@ -71,9 +71,12 @@ function showModal() {
 }
 
 async function deleteData() {
-  const res = await (await usersApi.deleteUserById(props.userId)).json();
-  if (res === "Token is not verified") router.push("/login");
-  else store.commit("delUserById", props.userId);
+  await usersApi
+    .deleteUserById(props.userId)
+    .then(() => {
+      store.commit("delUserById", props.userId);
+    })
+    .catch((err) => router.push("/login"));
   closeModal();
 }
 </script>

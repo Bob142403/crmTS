@@ -106,11 +106,10 @@ async function AddItem() {
     email: email.value,
   };
   if (first_name.value && last_name.value && email.value) {
-    const res = await (await usersApi.addUser(user)).json();
-
-    if (res === "Token is not verified") {
-      router.push("/login");
-    } else store.dispatch("fetchUsers");
+    await usersApi
+      .addUser(user)
+      .then(() => store.dispatch("fetchUsers"))
+      .catch((err) => router.push("/login"));
     closeModal();
   }
 }

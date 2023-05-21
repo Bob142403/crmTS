@@ -107,9 +107,13 @@ async function EditTask() {
     id: props.userId,
     email: email.value,
   };
-  const res = await (await usersApi.changeUserById(props.userId, obj)).json();
-  if (res === "Token is not verified") router.push("/login");
-  else store.commit("updateUserById", obj);
+
+  usersApi
+    .changeUserById(props.userId, obj)
+    .then(() => {
+      store.commit("updateUserById", obj);
+    })
+    .catch((err) => router.push("/login"));
   closeModal();
 }
 </script>

@@ -9,9 +9,7 @@ import { usersApi } from "../services/users-api";
 
 const router = useRouter();
 
-usersApi.getUsers().then((res) => {
-  if (res === "Token is not verified") {
-    router.push("/login");
-  }
+usersApi.getUsers().catch((res) => {
+  router.push("/login");
 });
 </script>

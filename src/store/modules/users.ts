@@ -23,7 +23,6 @@ export const usersModule: Module<UsersState, State> = {
     },
     addUser(state, user: User) {
       state.users.push(user);
-      console.log(state.users);
     },
     updateUserById(state, user: User) {
       state.users = state.users.map((elem) => {

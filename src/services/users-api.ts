@@ -1,3 +1,4 @@
+import axios from "axios";
 import CreateUser from "../types/CreateUser";
 import User from "../types/User";
 
@@ -5,47 +6,17 @@ const baseURL = "http://localhost:3000/users";
 
 export const usersApi = {
   addUser: async (user: CreateUser) => {
-    return await fetch(baseURL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify(user),
-    });
+    return await axios.post(baseURL, user);
   },
   getUsers: async () => {
-    return await fetch(baseURL, {
-      method: "GET",
-      headers: {
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-    }).then((users) => users.json());
+    return await axios.get(baseURL);
   },
-  getUserById: async (userId: number) => {
-    return await fetch(baseURL + `/${userId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-    }).then((res) => res.json());
-  },
+  getUserById: async (userId: number) =>
+    await axios.get(baseURL + `/${userId}`),
   changeUserById: async (userId: number, newData: User) =>
-    await fetch(baseURL + `/${userId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify(newData),
-    }),
+    await axios.put(baseURL + `/${userId}`, newData),
   deleteUserById: async (userId: number) =>
-    await fetch(baseURL + `/${userId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-    }),
+    await axios.delete(baseURL + `/${userId}`),
   signUp: async (info: CreateUser) =>
     await fetch("http://localhost:3000/sign-up", {
       method: "POST",
