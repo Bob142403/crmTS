@@ -4,7 +4,7 @@ import UsersPage from "../pages/users/UsersPage.vue";
 import SignInPage from "../pages/sign-in/SignInPage.vue";
 import HomePage from "../pages/HomePage.vue";
 import SignUpPage from "../pages/sign-up/SignUpPage.vue";
-import { store } from "../store/store";
+import { authApi } from "../services/auth-api";
 
 const routes = [
   {
@@ -22,10 +22,12 @@ const routes = [
     ],
   },
   {
+    name: "login",
     path: "/login",
     component: SignInPage,
   },
   {
+    name: "sign-up",
     path: "/registration",
     component: SignUpPage,
   },

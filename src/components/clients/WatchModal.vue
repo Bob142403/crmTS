@@ -40,10 +40,9 @@ interface Props {
   clientId: number;
 }
 
-const props = defineProps<Props>();
-
 const store = useStore();
 
+const props = defineProps<Props>();
 const isShowWatchModal = ref(false);
 
 const clientInfo = computed(() => store.getters.getClientById(props.clientId));

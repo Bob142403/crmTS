@@ -54,12 +54,21 @@ import { computed, onMounted } from "vue";
 import { useStore } from "../../store/store";
 import { usersApi } from "../../services/users-api";
 import { useRouter } from "vue-router";
+import { authApi } from "../../services/auth-api";
 
 const store = useStore();
 const router = useRouter();
 
-onMounted(() => {
-  usersApi
+onMounted(async () => {
+  await authApi
+    .auth()
+    .then((res) => {
+      store.commit("setAuth", res.data);
+    })
+    .catch((err) => {
+      router.push("/login");
+    });
+  await usersApi
     .getUsers()
     .then((res) => {
       store.commit("setUsers", res.data);

@@ -96,6 +96,7 @@ async function submitINFO() {
   await authApi
     .signIn({ email: email.value, password: password.value })
     .then((res) => {
+      console.log(res.data);
       localStorage.setItem("token", res.data);
       router.push("/");
       email.value = "";

@@ -18,7 +18,6 @@ export const clientsModule: Module<ClientsState, State> = {
   state: () => ({ data: [] }),
   getters: {
     getClientById: (state) => (id: number) => {
-      console.log(state.data);
       return state.data.find((elem) => elem.id === id);
     },
     getClients: (state) => state.data,
