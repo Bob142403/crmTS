@@ -8,11 +8,14 @@ export interface AuthState {
 
 export const authModule: Module<AuthState, State> = {
   state: () => ({
-    auth: { email: "", password: "", last_name: "", first_name: "" },
+    auth: { email: "", last_name: "", first_name: "" },
   }),
   mutations: {
     setAuth: (state, user) => {
       state.auth = user;
+    },
+    signOut: (state) => {
+      state.auth = { email: "", last_name: "", first_name: "" };
     },
   },
 };

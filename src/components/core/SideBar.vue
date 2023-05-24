@@ -63,7 +63,7 @@
               <ul class="py-1" role="none">
                 <li>
                   <a
-                    href="#"
+                    @click="signOut"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                     role="menuitem"
                     >Sign out</a
@@ -149,4 +149,10 @@ const router = useRouter();
 const store = useStore();
 
 const userInfo = computed(() => store.state.authModule.auth);
+
+function signOut() {
+  localStorage.setItem("token", "");
+  router.push("/login");
+  store.commit("signOut");
+}
 </script>
