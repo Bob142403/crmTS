@@ -1,3 +1,4 @@
+import { companiesModule, CompaniesState } from "./modules/company";
 import { clientsModule, ClientsState } from "./modules/clients";
 import { usersModule, UsersState } from "./modules/users";
 import { authModule, AuthState } from "./modules/auth";
@@ -8,6 +9,7 @@ export interface State {
   clientsModule: ClientsState;
   usersModule: UsersState;
   authModule: AuthState;
+  companiesModule: CompaniesState;
 }
 
 export const key: InjectionKey<Store<State>> = Symbol();
@@ -17,6 +19,7 @@ export const store = createStore<State>({
     usersModule,
     clientsModule,
     authModule,
+    companiesModule,
   },
 });
 

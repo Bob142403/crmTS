@@ -4,37 +4,24 @@ import User from "../types/User";
 
 const baseURL = "http://localhost:3000/users";
 
+const instance = axios.create({
+  baseURL,
+  headers: {
+    Authorization: localStorage.getItem("token"),
+  },
+});
+
 export const usersApi = {
   addUser: async (user: CreateUser) => {
-    return await axios.post(baseURL + "/create-user", user, {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    });
+    return await instance.post("/create-user", user);
   },
   getUsers: async () => {
-    return await axios.get(baseURL + "/list", {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    });
+    return await instance.get("/list");
   },
   getUserById: async (userId: number) =>
-    await axios.get(baseURL + `/get-user/${userId}`, {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    }),
+    await instance.get(`/get-user/${userId}`),
   changeUserById: async (userId: number, newData: User) =>
-    await axios.put(baseURL + `/update-user/${userId}`, newData, {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    }),
+    await instance.put(`/update-user/${userId}`, newData),
   deleteUserById: async (userId: number) =>
-    await axios.delete(baseURL + `/delete-user/${userId}`, {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    }),
+    await instance.delete(`/delete-user/${userId}`),
 };

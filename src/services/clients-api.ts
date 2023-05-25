@@ -4,36 +4,23 @@ import CreateClient from "../types/CreateClient";
 
 const baseURL = "http://localhost:3000/clients";
 
+const instance = axios.create({
+  baseURL,
+  headers: {
+    Authorization: localStorage.getItem("token"),
+  },
+});
+
 export const clientsApi = {
   getClients: async () => {
-    return await axios.get(baseURL + "/list", {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    });
+    return await instance.get("/list");
   },
   deleteClientById: async (clientId: number) =>
-    await axios.delete(baseURL + `/delete-client/${clientId}`, {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    }),
+    await instance.delete(`/delete-client/${clientId}`),
   changeClientById: async (clientId: number, newData: Client) =>
-    await axios.put(baseURL + `/update-client/${clientId}`, newData, {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    }),
+    await instance.put(`/update-client/${clientId}`, newData),
   getClientById: async (clientId: number) =>
-    await axios.get(baseURL + `/get-client/${clientId}`, {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    }),
+    await instance.get(`/get-client/${clientId}`),
   addClient: async (client: CreateClient) =>
-    await axios.post(baseURL + "/create-client", client, {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    }),
+    await instance.post("/create-client", client),
 };

@@ -12,18 +12,10 @@ const apiClient: AxiosInstance = axios.create({
 
 export const authApi = {
   signIn: async (account: any) => {
-    return await apiClient.post("/login", account, {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    });
+    return await apiClient.post("/login", account);
   },
   signUp: async (info: CreateUser) =>
-    await axios.post(baseURL + "/sign-up", info, {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    }),
+    await axios.post(baseURL + "/sign-up", info),
   auth: async () =>
     await apiClient.get("/auth", {
       headers: {

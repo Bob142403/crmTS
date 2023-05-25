@@ -30,7 +30,48 @@
         </div>
         <div class="flex items-center">
           <div class="flex items-center ml-3">
-            <div>
+            <dropdown text="Bottom" placement="bottom" >
+              <template #trigger>
+                <button
+                  type="button"
+                  class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                >
+                  <span class="sr-only">Open user menu</span>
+                  <img
+                    class="w-8 h-8 rounded-full"
+                    src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                    alt="user photo"
+                  />
+                </button>
+              </template>
+              <div
+                class="z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+                id="dropdown-user"
+              >
+                <div class="px-4 py-3" role="none">
+                  <p class="text-sm text-gray-900 dark:text-white" role="none">
+                    {{ userInfo.first_name + " " + userInfo.last_name }}
+                  </p>
+                  <p
+                    class="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
+                    role="none"
+                  >
+                    {{ userInfo.email }}
+                  </p>
+                </div>
+                <ul class="py-1" role="none">
+                  <li>
+                    <a
+                      @click="signOut"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+                      role="menuitem"
+                      >Sign out</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </dropdown>
+            <!-- <div>
               <button
                 type="button"
                 class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
@@ -64,19 +105,18 @@
                 <li>
                   <a
                     @click="signOut"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
                     role="menuitem"
                     >Sign out</a
                   >
                 </li>
               </ul>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
     </div>
   </nav>
-
   <aside
     id="logo-sidebar"
     class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
@@ -135,12 +175,17 @@
     </div>
   </aside>
 
-  <div class="p-4 sm:ml-64">
+  <div class="px-4 sm:ml-64 pt-16">
     <slot></slot>
   </div>
 </template>
 
 <script setup lang="ts">
+/**
+ * company
+ * поля : id name
+ */
+import { Dropdown } from "flowbite-vue";
 import { useRouter } from "vue-router";
 import { useStore } from "../../store/store";
 import { computed } from "vue";
