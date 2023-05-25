@@ -74,7 +74,7 @@ async function deleteData() {
   await companyApi
     .deleteCompanyById(props.companyId)
     .then(() => {
-      // store.commit("delUserById", props.companyId);
+      store.commit("delCompanyById", props.companyId);
     })
     .catch((err) => router.push("/login"));
   closeModal();

@@ -75,7 +75,7 @@ async function EditTask() {
   companyApi
     .changeCompanyById(props.companyId, obj)
     .then(() => {
-      // store.commit("updateUserById", obj);
+      store.commit("updateCompanyById", obj);
     })
     .catch((err) => router.push("/login"));
   closeModal();

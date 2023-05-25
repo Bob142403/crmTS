@@ -4,7 +4,7 @@ import UsersPage from "../pages/users/UsersPage.vue";
 import SignInPage from "../pages/sign-in/SignInPage.vue";
 import HomePage from "../pages/HomePage.vue";
 import SignUpPage from "../pages/sign-up/SignUpPage.vue";
-import { authApi } from "../services/auth-api";
+import CompanyPageVue from "../pages/company/CompanyPage.vue";
 
 const routes = [
   {
@@ -18,6 +18,10 @@ const routes = [
       {
         path: "/users",
         component: UsersPage,
+      },
+      {
+        path: "/companies",
+        component: CompanyPageVue,
       },
     ],
   },

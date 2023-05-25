@@ -10,6 +10,7 @@
         >
           <tr>
             <th scope="col" class="px-6 py-3">Name</th>
+            <th scope="col" class="px-6 py-3">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -24,9 +25,7 @@
             >
               {{ company["name"] }}
             </th>
-
-            <!-- <td class="px-6 py-4">{{ company["last_name"] }}</td>
-            <td class="px-6 py-4">{{ company["email"] }}</td> -->
+            
             <td class="px-6 py-4">
               <div class="flex items-center">
                 <EditModal :company-id="company.id" />
@@ -64,16 +63,16 @@ onMounted(async () => {
       router.push("/login");
     });
   await companyApi
-    .getCompanes()
+    .getCompanies()
     .then((res) => {
-    //   store.commit("setUsers", res.data);
+      store.commit("setCompanies", res.data);
     })
     .catch((err) => {
       router.push("/login");
     });
 });
 
-const users = computed(() => {
+const companies = computed(() => {
   return store.state.companiesModule.companies;
 });
 </script>

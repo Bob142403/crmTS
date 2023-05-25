@@ -1,6 +1,6 @@
 interface Company {
   name: string;
-  id?: number;
+  id: number;
 }
 
 export default Company;

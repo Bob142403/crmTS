@@ -42,13 +42,13 @@
 import { ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
-import Company from "../../types/Company";
 import { useRouter } from "vue-router";
 import { companyApi } from "../../services/company-api";
+import CreateCompany from "../../types/CreateCompany";
 
 function closeModal() {
   isShowCreateModal.value = false;
-    name.value = "";
+  name.value = "";
 }
 function showModal() {
   isShowCreateModal.value = true;
@@ -60,16 +60,16 @@ const store = useStore();
 const router = useRouter();
 
 async function AddItem() {
-  const company: Company = {
+  const company: CreateCompany = {
     name: name.value,
   };
   if (name.value) {
     await companyApi
       .addCompany(company)
-      .then(() => {})
-      // store.dispatch("fetchUsers"))
+      .then(() => store.dispatch("fetchCompanies"))
       .catch((err) => router.push("/login"));
     name.value = "";
+    closeModal();
   }
 }
 </script>

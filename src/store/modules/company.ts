@@ -11,7 +11,7 @@ export const companiesModule: Module<CompaniesState, State> = {
   actions: {
     async fetchCompanies(ctx) {
       companyApi.getCompanies().then((res) => {
-        ctx.commit("setCompanies", res);
+        ctx.commit("setCompanies", res.data);
       });
     },
   },
