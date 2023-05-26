@@ -5,6 +5,7 @@ import SignInPage from "../pages/sign-in/SignInPage.vue";
 import HomePage from "../pages/HomePage.vue";
 import SignUpPage from "../pages/sign-up/SignUpPage.vue";
 import CompanyPageVue from "../pages/company/CompanyPage.vue";
+import { authApi } from "../services/auth-api";
 
 const routes = [
   {
@@ -22,6 +23,7 @@ const routes = [
       {
         path: "/companies",
         component: CompanyPageVue,
+        
       },
     ],
   },
