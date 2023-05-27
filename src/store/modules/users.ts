@@ -11,9 +11,11 @@ export interface UsersState {
 export const usersModule: Module<UsersState, State> = {
   actions: {
     async fetchUsers(ctx) {
-      usersApi.getUsers().then((res) => {
-        ctx.commit("setUsers", res);
-      });
+      usersApi
+        .getUsersByCompanyId(ctx.rootState.authModule.auth.company_id)
+        .then((res) => {
+          ctx.commit("setUsers", res);
+        });
     },
   },
   state: () => ({ users: [] }),

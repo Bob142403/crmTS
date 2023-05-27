@@ -15,6 +15,8 @@ export const clientsApi = {
   getClients: async () => {
     return await instance.get("/list");
   },
+  getClientsByCompanyId: async (companyId: number) =>
+    await instance.get(`/get-clients-companyId/${companyId}`),
   deleteClientById: async (clientId: number) =>
     await instance.delete(`/delete-client/${clientId}`),
   changeClientById: async (clientId: number, newData: Client) =>

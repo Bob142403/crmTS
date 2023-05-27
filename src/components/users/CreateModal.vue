@@ -104,6 +104,7 @@ async function AddItem() {
     first_name: first_name.value,
     last_name: last_name.value,
     email: email.value,
+    company_id: store.state.authModule.auth.company_id,
   };
   if (first_name.value && last_name.value && email.value) {
     await usersApi

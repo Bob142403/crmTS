@@ -141,6 +141,7 @@ async function AddItem() {
     last_name: last_name.value,
     phone_number: phone_number.value,
     email: email.value,
+    company_id: store.state.authModule.auth.company_id,
   };
   if (
     address.value &&

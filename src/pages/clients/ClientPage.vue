@@ -74,7 +74,7 @@ onMounted(async () => {
     });
 
   await clientsApi
-    .getClients()
+    .getClientsByCompanyId(store.state.authModule.auth.company_id)
     .then((res) => {
       store.commit("setClient", res.data);
     })

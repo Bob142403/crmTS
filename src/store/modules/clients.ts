@@ -10,9 +10,11 @@ export interface ClientsState {
 export const clientsModule: Module<ClientsState, State> = {
   actions: {
     async fetchClients(ctx) {
-      await clientsApi.getClients().then((clients) => {
-        ctx.commit("setClient", clients.data);
-      });
+      await clientsApi
+        .getClientsByCompanyId(ctx.rootState.authModule.auth.company_id)
+        .then((clients) => {
+          ctx.commit("setClient", clients.data);
+        });
     },
   },
   state: () => ({ data: [] }),

@@ -24,4 +24,6 @@ export const usersApi = {
     await instance.put(`/update-user/${userId}`, newData),
   deleteUserById: async (userId: number) =>
     await instance.delete(`/delete-user/${userId}`),
+  getUsersByCompanyId: async (company_id: number) =>
+    await instance.get(`/get-users-companyId/${company_id}`),
 };

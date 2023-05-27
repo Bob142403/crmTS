@@ -63,13 +63,14 @@ onMounted(async () => {
   await authApi
     .auth()
     .then((res) => {
+      console.log(res.data);
       store.commit("setAuth", res.data);
     })
     .catch((err) => {
       router.push("/login");
     });
   await usersApi
-    .getUsers()
+    .getUsersByCompanyId(store.state.authModule.auth.company_id)
     .then((res) => {
       store.commit("setUsers", res.data);
     })

@@ -57,7 +57,7 @@
                   class="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
                   role="none"
                 >
-                  {{ userInfo.email }}
+                  {{ userInfo.company_id }}
                 </p>
               </div>
               <ul class="py-1" role="none">
@@ -163,7 +163,6 @@
 </template>
 
 <script setup lang="ts">
-import { Dropdown } from "flowbite-vue";
 import { useRouter } from "vue-router";
 import { useStore } from "../../store/store";
 import { computed } from "vue";

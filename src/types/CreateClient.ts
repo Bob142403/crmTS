@@ -5,4 +5,5 @@ export default interface CreateClient {
   email: string;
   phone_number: string;
   id?: number;
+  company_id?: number;
 }

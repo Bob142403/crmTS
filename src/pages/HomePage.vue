@@ -14,7 +14,6 @@ const router = useRouter();
 const store = useStore();
 
 onMounted(async () => {
-
   await authApi
     .auth()
     .then((res) => {
