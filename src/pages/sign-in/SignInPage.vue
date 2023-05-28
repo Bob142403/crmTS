@@ -87,6 +87,8 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { authApi } from "../../services/auth-api";
+import { companyApi } from "../../services/company-api";
+import { usersApi } from "../../services/users-api";
 
 const router = useRouter();
 const email = ref("");
@@ -95,9 +97,15 @@ const password = ref("");
 async function submitINFO() {
   await authApi
     .signIn({ email: email.value, password: password.value })
-    .then((res) => {
-      console.log(res.data);
-      localStorage.setItem("token", res.data);
+    .then(async (res) => {
+      if (!res.data.company_id) {
+        let company;
+        while (!(company = prompt("Which Company ?"))) {}
+
+        await companyApi.addCompany({ name: company });
+        await usersApi.changeUserById(res.data.id, { company_id: company });
+      }
+      localStorage.setItem("token", res.data.token);
       router.push("/");
       email.value = "";
       password.value = "";

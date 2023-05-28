@@ -20,7 +20,7 @@ export const usersApi = {
   },
   getUserById: async (userId: number) =>
     await instance.get(`/get-user/${userId}`),
-  changeUserById: async (userId: number, newData: User) =>
+  changeUserById: async (userId: number, newData: any) =>
     await instance.put(`/update-user/${userId}`, newData),
   deleteUserById: async (userId: number) =>
     await instance.delete(`/delete-user/${userId}`),
