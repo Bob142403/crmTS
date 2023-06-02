@@ -87,8 +87,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { authApi } from "../../services/auth-api";
-import { companyApi } from "../../services/company-api";
-import { usersApi } from "../../services/users-api";
 import { useStore } from "../../store/store";
 
 const router = useRouter();
@@ -103,12 +101,6 @@ async function submitINFO() {
       if (!res.data.user.company_id) {
         store.commit("setAuth", res.data.user);
         router.push("/unknown");
-
-        // let company;
-        // while (!(company = prompt("Which Company ?"))) {}
-
-        // await companyApi.addCompany({ name: company });
-        // await usersApi.changeUserById(res.data.id, { company_id: company });
       } else {
         localStorage.setItem("token", res.data.token);
         router.push("/");

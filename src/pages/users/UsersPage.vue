@@ -70,7 +70,7 @@ onMounted(async () => {
       router.push("/login");
     });
   await usersApi
-    .getUsersByCompanyId(store.state.authModule.auth.company_id)
+    .getUsers()
     .then((res) => {
       store.commit("setUsers", res.data);
     })
