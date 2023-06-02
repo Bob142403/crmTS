@@ -126,7 +126,13 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { authApi } from "../../services/auth-api";
-import { usersApi } from "../../services/users-api";
+// import { useVuelidate } from "@vuelidate/core";
+// import {
+//   required,
+//   helpers,
+//   email as Email,
+//   sameAs,
+// } from "@vuelidate/validators";
 
 const router = useRouter();
 const first_name = ref("");
@@ -135,7 +141,35 @@ const email = ref("");
 const password = ref("");
 const confirm_password = ref("");
 
+// const rules = {
+//   first_name: {
+//     required: helpers.withMessage("Это поле Обязательно !", required),
+//   },
+//   last_name: {
+//     required: helpers.withMessage("Это поле Обязательно !", required),
+//   },
+//   email: {
+//     required: helpers.withMessage("Неправильная Почта !", Email),
+//   },
+//   password: {
+//     required: helpers.withMessage("Это поле Обязательно !", required),
+//   },
+//   confirm_password: {
+//     sameAs: sameAs(password.value),
+//   },
+// };
+
+// const v$ = useVuelidate(rules, {
+//   first_name,
+//   last_name,
+//   email,
+//   password,
+//   confirm_password,
+// });
+
 async function addUser() {
+  // v$.value.$validate();
+  // console.log(v$.value);
   const user = {
     first_name: first_name.value,
     last_name: last_name.value,

@@ -3,6 +3,7 @@ interface Auth {
   first_name: string;
   last_name: string;
   company_id: number;
+  id: number;
 }
 
 export default Auth;
