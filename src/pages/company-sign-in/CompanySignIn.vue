@@ -4,7 +4,6 @@ import { VueCookies } from "vue-cookies";
 import { useRouter } from "vue-router";
 import { authApi } from "../../services/auth-api";
 import { companyApi } from "../../services/company-api";
-import { usersApi } from "../../services/users-api";
 
 const company = ref("");
 const router = useRouter();

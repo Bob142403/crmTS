@@ -5,7 +5,7 @@ import SignInPage from "../pages/sign-in/SignInPage.vue";
 import HomePage from "../pages/HomePage.vue";
 import SignUpPage from "../pages/sign-up/SignUpPage.vue";
 import CompanyPageVue from "../pages/company/CompanyPage.vue";
-import Unknown from "../pages/unknown/Unknown.vue";
+import CompanySignIn from "../pages/company-sign-in/CompanySignIn.vue";
 import { authApi } from "../services/auth-api";
 
 const routes = [
@@ -38,8 +38,8 @@ const routes = [
     component: SignUpPage,
   },
   {
-    path: "/unknown",
-    component: Unknown,
+    path: "/company-sign-in",
+    component: CompanySignIn,
   },
 ];
 

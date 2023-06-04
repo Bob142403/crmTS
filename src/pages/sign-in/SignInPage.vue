@@ -105,7 +105,7 @@ async function submitINFO() {
         $cookies?.set("password", password.value);
         $cookies?.set("id", res.data.user.id);
         store.commit("setAuth", res.data.user);
-        router.push("/unknown");
+        router.push("/company-sign-in");
       } else {
         localStorage.setItem("token", res.data.token);
         router.push("/");
