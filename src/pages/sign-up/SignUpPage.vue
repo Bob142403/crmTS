@@ -14,12 +14,7 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form
-        class="space-y-4"
-        action="#"
-        method="POST"
-        @submit.prevent="addUser"
-      >
+      <form class="space-y-3" @submit.prevent>
         <div>
           <label
             for="first_name"
@@ -35,6 +30,11 @@
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.first_name.$error">{{
+              v$.first_name.$errors[0].$message
+            }}</span>
+          </p>
         </div>
         <div>
           <label
@@ -51,6 +51,11 @@
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.last_name.$error">{{
+              v$.last_name.$errors[0].$message
+            }}</span>
+          </p>
         </div>
         <div>
           <label
@@ -66,9 +71,14 @@
               v-model="email"
               autocomplete="email"
               required
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              class="block w-full border-0 rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.email.$error">{{
+              v$.email.$errors[0].$message
+            }}</span>
+          </p>
         </div>
 
         <div>
@@ -88,6 +98,11 @@
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.password.$error">{{
+              v$.password.$errors[0].$message
+            }}</span>
+          </p>
         </div>
 
         <div>
@@ -107,11 +122,16 @@
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.confirm_password.$error">{{
+              v$.confirm_password.$errors[0].$message
+            }}</span>
+          </p>
         </div>
 
         <div>
           <button
-            type="submit"
+            @click="addUser"
             class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Sign up
@@ -126,13 +146,13 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { authApi } from "../../services/auth-api";
-// import { useVuelidate } from "@vuelidate/core";
-// import {
-//   required,
-//   helpers,
-//   email as Email,
-//   sameAs,
-// } from "@vuelidate/validators";
+import { useVuelidate } from "@vuelidate/core";
+import {
+  required,
+  helpers,
+  email as Email,
+  sameAs,
+} from "@vuelidate/validators";
 
 const router = useRouter();
 const first_name = ref("");
@@ -141,42 +161,41 @@ const email = ref("");
 const password = ref("");
 const confirm_password = ref("");
 
-// const rules = {
-//   first_name: {
-//     required: helpers.withMessage("Это поле Обязательно !", required),
-//   },
-//   last_name: {
-//     required: helpers.withMessage("Это поле Обязательно !", required),
-//   },
-//   email: {
-//     required: helpers.withMessage("Неправильная Почта !", Email),
-//   },
-//   password: {
-//     required: helpers.withMessage("Это поле Обязательно !", required),
-//   },
-//   confirm_password: {
-//     sameAs: sameAs(password.value),
-//   },
-// };
+const rules = {
+  first_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  last_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  email: {
+    required: helpers.withMessage("Please enter a valid email", Email),
+  },
+  password: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  confirm_password: {
+    sameAs: helpers.withMessage("Passwords must match", sameAs(password)),
+  },
+};
 
-// const v$ = useVuelidate(rules, {
-//   first_name,
-//   last_name,
-//   email,
-//   password,
-//   confirm_password,
-// });
+const v$ = useVuelidate(rules, {
+  first_name,
+  last_name,
+  email,
+  password,
+  confirm_password,
+});
 
 async function addUser() {
-  // v$.value.$validate();
-  // console.log(v$.value);
+  v$.value.$validate();
   const user = {
     first_name: first_name.value,
     last_name: last_name.value,
     email: email.value,
     password: password.value,
   };
-  if (confirm_password.value === password.value) {
+  if (!v$.value.$error) {
     await authApi
       .signUp(user)
       .then(() => {
