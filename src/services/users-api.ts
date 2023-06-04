@@ -1,29 +1,21 @@
-import axios from "axios";
 import CreateUser from "../types/CreateUser";
-import User from "../types/User";
+import { instance, makeApiURL } from "./axios";
 
-const baseURL = "http://localhost:3000/users";
-
-const instance = axios.create({
-  baseURL,
-  headers: {
-    Authorization: localStorage.getItem("token"),
-  },
-});
+const getApiURL = (path: string) => makeApiURL("users", path);
 
 export const usersApi = {
   addUser: async (user: CreateUser) => {
-    return await instance.post("/create-user", user);
+    return await instance.post(getApiURL("create-user"), user);
   },
   getUsers: async () => {
-    return await instance.get("/list");
+    return await instance.get(getApiURL("list"));
   },
   getUserById: async (userId: number) =>
-    await instance.get(`/get-user/${userId}`),
+    await instance.get(getApiURL(`get-user/${userId}`)),
   changeUserById: async (userId: number, newData: any) =>
-    await instance.put(`/update-user/${userId}`, newData),
+    await instance.put(getApiURL(`update-user/${userId}`), newData),
   deleteUserById: async (userId: number) =>
-    await instance.delete(`/delete-user/${userId}`),
+    await instance.delete(getApiURL(`delete-user/${userId}`)),
   getUsersByCompanyId: async (company_id: number) =>
-    await instance.get(`/get-users-companyId/${company_id}`),
+    await instance.get(getApiURL(`get-users-companyId/${company_id}`)),
 };

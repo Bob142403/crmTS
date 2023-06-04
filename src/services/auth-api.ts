@@ -1,27 +1,17 @@
-import axios, { AxiosInstance } from "axios";
 import CreateUser from "../types/CreateUser";
-
-const baseURL = "http://localhost:3000";
-
-const apiClient: AxiosInstance = axios.create({
-  baseURL,
-  headers: {
-    "Content-type": "application/json",
-  },
-});
+import { instance } from "./axios";
 
 export const authApi = {
   signIn: async (account: any) => {
-    return await apiClient.post("/login", account);
+    return await instance.post("/login", account);
   },
-  signUp: async (info: CreateUser) =>
-    await axios.post(baseURL + "/sign-up", info),
+  signUp: async (info: CreateUser) => await instance.post("/sign-up", info),
   auth: async () =>
-    await apiClient.get("/auth", {
+    await instance.get("/auth", {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
     }),
   chooseCompany: async (id: number, data: any) =>
-    await apiClient.put(`/choose-company/${id}`, data),
+    await instance.put(`/choose-company/${id}`, data),
 };

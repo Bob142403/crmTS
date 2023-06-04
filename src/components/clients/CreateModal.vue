@@ -136,6 +136,7 @@ import CreateClient from "../../types/CreateClient";
 import { router } from "../../routes";
 import useVuelidate from "@vuelidate/core";
 import { useToast } from "vue-toastification";
+import { useCreateClient } from "../../hooks/api/clients/use-create-client";
 
 const isShowCreateModal = ref(false);
 const address = ref("");
@@ -146,6 +147,7 @@ const email = ref("");
 
 const store = useStore();
 const toast = useToast();
+const createClient = useCreateClient();
 
 const rules = {
   first_name: {
@@ -202,15 +204,16 @@ async function AddClient() {
   };
 
   if (!v$.value.$error) {
-    await clientsApi
-      .addClient(client)
-      .then((res) => {
-        store.dispatch("fetchClients");
-        toast.success(res.data);
-      })
-      .catch((err) => {
-        router.push("/login");
-      });
+    await createClient(client);
+    // await clientsApi
+    //   .addClient(client)
+    //   .then((res) => {
+    //     store.dispatch("fetchClients");
+    //     // toast.success(res.data);
+    //   })
+    //   .catch((err) => {
+    //     router.push("/login");
+    //   });
 
     v$.value.$reset();
     closeModal();
