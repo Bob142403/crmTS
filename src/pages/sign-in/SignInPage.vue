@@ -84,7 +84,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { inject, ref } from "vue";
+import { VueCookies } from "vue-cookies";
 import { useRouter } from "vue-router";
 import { authApi } from "../../services/auth-api";
 import { useStore } from "../../store/store";
@@ -93,12 +94,16 @@ const router = useRouter();
 const email = ref("");
 const password = ref("");
 const store = useStore();
+const $cookies = inject<VueCookies>("$cookies");
 
 async function submitINFO() {
   await authApi
     .signIn({ email: email.value, password: password.value })
     .then(async (res) => {
       if (!res.data.user.company_id) {
+        $cookies?.set("email", email.value);
+        $cookies?.set("password", password.value);
+        $cookies?.set("id", res.data.user.id);
         store.commit("setAuth", res.data.user);
         router.push("/unknown");
       } else {

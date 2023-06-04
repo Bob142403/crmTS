@@ -22,4 +22,6 @@ export const authApi = {
         Authorization: localStorage.getItem("token"),
       },
     }),
+  chooseCompany: async (id: number, data: any) =>
+    await apiClient.put(`/choose-company/${id}`, data),
 };

@@ -1,27 +1,28 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
+import { VueCookies } from "vue-cookies";
 import { useRouter } from "vue-router";
 import { authApi } from "../../services/auth-api";
 import { companyApi } from "../../services/company-api";
 import { usersApi } from "../../services/users-api";
-import { useStore } from "../../store/store";
 
 const company = ref("");
 const router = useRouter();
-const store = useStore();
 
-const auth = computed(() => store.getters.getInfoAboutUser);
+const $cookies = inject<VueCookies>("$cookies");
+const email = $cookies?.get("email");
+const password = $cookies?.get("password");
+const id = $cookies?.get("id");
 
 async function submitINFO() {
   await companyApi.addCompany({ name: company.value });
-  console.log(123);
-  await usersApi.changeUserById(auth.value.id, {
+  await authApi.chooseCompany(id, {
     company_id: company.value,
   });
   await authApi
     .signIn({
-      email: auth.value.email,
-      password: auth.value.password,
+      email,
+      password,
     })
     .then(async (res) => {
       localStorage.setItem("token", res.data.token);
