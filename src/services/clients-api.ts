@@ -12,7 +12,7 @@ export const clientsApi = {
     await instance.get(getApiURL(`/get-clients-companyId/${companyId}`)),
   deleteClientById: async (clientId: number) =>
     await instance.delete(getApiURL(`/delete-client/${clientId}`)),
-  changeClientById: async (clientId: number, newData: Client) =>
+  changeClientById: async (clientId: number, newData: CreateClient) =>
     await instance.put(getApiURL(`/update-client/${clientId}`), newData),
   getClientById: async (clientId: number) =>
     await instance.get(getApiURL(`/get-client/${clientId}`)),

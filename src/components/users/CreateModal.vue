@@ -89,12 +89,10 @@
 import { ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
-import { usersApi } from "../../services/users-api";
 import CreateUser from "../../types/CreateUser";
-import { useRouter } from "vue-router";
 import { helpers, email as Email, required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
-import { useToast } from "vue-toastification";
+import { useCreateUser } from "../../hooks/api/users/use-create-user";
 
 function closeModal() {
   isShowCreateModal.value = false;
@@ -109,8 +107,7 @@ const first_name = ref("");
 const last_name = ref("");
 const email = ref("");
 const store = useStore();
-const router = useRouter();
-const toast = useToast();
+const createUser = useCreateUser();
 
 const rules = {
   first_name: {
@@ -146,13 +143,8 @@ async function AddUser() {
     company_id: store.state.authModule.auth.company_id,
   };
   if (!v$.value.$error) {
-    await usersApi
-      .addUser(user)
-      .then(() => {
-        toast.success("User Created");
-        store.dispatch("fetchUsers");
-      })
-      .catch((err) => router.push("/login"));
+    await createUser(user);
+
     closeModal();
   }
 }

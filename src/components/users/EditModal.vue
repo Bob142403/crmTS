@@ -75,18 +75,15 @@
 import { computed, ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
-import { usersApi } from "../../services/users-api";
 import { helpers, email as Email, required } from "@vuelidate/validators";
-import { useRouter } from "vue-router";
 import useVuelidate from "@vuelidate/core";
-import { useToast } from "vue-toastification";
+import { useUpdateUser } from "../../hooks/api/users/use-update-user";
 
 interface Props {
   userId: number;
 }
 
 const store = useStore();
-const router = useRouter();
 
 const props = defineProps<Props>();
 
@@ -95,7 +92,7 @@ const isShowEditModal = ref(false);
 const first_name = ref(user.value.first_name);
 const last_name = ref(user.value.last_name);
 const email = ref(user.value.email);
-const toast = useToast();
+const updateUser = useUpdateUser();
 
 const rules = {
   first_name: {
@@ -132,13 +129,8 @@ async function EditTask() {
     email: email.value,
   };
   if (!v$.value.$error) {
-    usersApi
-      .changeUserById(props.userId, obj)
-      .then(() => {
-        toast("User Updated");
-        store.commit("updateUserById", obj);
-      })
-      .catch((err) => router.push("/login"));
+    await updateUser(props.userId, obj);
+
     closeModal();
   }
 }

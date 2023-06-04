@@ -130,11 +130,9 @@
 import { computed, ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
-import { clientsApi } from "../../services/clients-api";
-import { router } from "../../routes";
 import { helpers, email as Email, required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
-import { useToast } from "vue-toastification";
+import { useUpdateClient } from "../../hooks/api/clients/use-update-client";
 
 interface Props {
   clientId: number;
@@ -151,7 +149,7 @@ const first_name = ref(client.value.first_name);
 const last_name = ref(client.value.last_name);
 const phone_number = ref(client.value.phone_number);
 const email = ref(client.value.email);
-const toast = useToast();
+const updateClient = useUpdateClient();
 
 const rules = {
   first_name: {
@@ -197,13 +195,8 @@ async function EditTask() {
     email: email.value,
   };
   if (!v$.value.$error) {
-    await clientsApi
-      .changeClientById(props.clientId, obj)
-      .then((res) => {
-        toast("Client Updated");
-        store.commit("updateClientById", obj);
-      })
-      .catch((err) => router.push("/login"));
+    await updateClient(props.clientId, obj);
+
     closeModal();
   }
 }

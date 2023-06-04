@@ -48,18 +48,13 @@
 <script setup lang="ts">
 import { Modal } from "flowbite-vue";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useToast } from "vue-toastification";
-import { usersApi } from "../../services/users-api";
-import { useStore } from "../../store/store";
+import { useDeleteUser } from "../../hooks/api/users/use-delete-user";
 
 interface Props {
   userId: number;
 }
 
-const store = useStore();
-const router = useRouter();
-const toast = useToast();
+const deleteUser = useDeleteUser();
 
 const isShowDeleteModal = ref(false);
 
@@ -73,13 +68,8 @@ function showModal() {
 }
 
 async function deleteData() {
-  await usersApi
-    .deleteUserById(props.userId)
-    .then(() => {
-      toast.error("User Deleted");
-      store.commit("delUserById", props.userId);
-    })
-    .catch((err) => router.push("/login"));
+  await deleteUser(props.userId);
+
   closeModal();
 }
 </script>
