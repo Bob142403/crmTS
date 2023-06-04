@@ -1,5 +1,4 @@
 <template>
-  <!-- Modal toggle -->
   <a
     href="#"
     class="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-2"
@@ -26,6 +25,11 @@
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.first_name.$error">{{
+              v$.first_name.$errors[0].$message
+            }}</span>
+          </p>
         </div>
         <div>
           <label
@@ -41,6 +45,11 @@
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.last_name.$error">{{
+              v$.last_name.$errors[0].$message
+            }}</span>
+          </p>
         </div>
         <div>
           <label
@@ -57,6 +66,11 @@
             placeholder="name@company.com"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.email.$error">{{
+              v$.email.$errors[0].$message
+            }}</span>
+          </p>
         </div>
         <div>
           <label
@@ -72,6 +86,11 @@
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.address.$error">{{
+              v$.address.$errors[0].$message
+            }}</span>
+          </p>
         </div>
 
         <div>
@@ -88,6 +107,11 @@
             placeholder="123-45-678"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.phone_number.$error">{{
+              v$.phone_number.$errors[0].$message
+            }}</span>
+          </p>
         </div>
       </div>
     </template>
@@ -108,6 +132,9 @@ import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
 import { clientsApi } from "../../services/clients-api";
 import { router } from "../../routes";
+import { helpers, email as Email, required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+import { useToast } from "vue-toastification";
 
 interface Props {
   clientId: number;
@@ -124,6 +151,33 @@ const first_name = ref(client.value.first_name);
 const last_name = ref(client.value.last_name);
 const phone_number = ref(client.value.phone_number);
 const email = ref(client.value.email);
+const toast = useToast();
+
+const rules = {
+  first_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  last_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  address: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  phone_number: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  email: {
+    Email: helpers.withMessage("Please enter a valid email", Email),
+    required: helpers.withMessage("This field is required", required),
+  },
+};
+const v$ = useVuelidate(rules, {
+  first_name,
+  last_name,
+  address,
+  phone_number,
+  email,
+});
 
 function closeModal() {
   isShowEditModal.value = false;
@@ -133,6 +187,7 @@ function showModal() {
 }
 
 async function EditTask() {
+  v$.value.$validate();
   const obj = {
     address: address.value,
     first_name: first_name.value,
@@ -141,11 +196,15 @@ async function EditTask() {
     id: props.clientId,
     email: email.value,
   };
-  await clientsApi
-    .changeClientById(props.clientId, obj)
-    .then(() => store.commit("updateClientById", obj))
-    .catch((err) => router.push("/login"));
-
-  closeModal();
+  if (!v$.value.$error) {
+    await clientsApi
+      .changeClientById(props.clientId, obj)
+      .then((res) => {
+        toast("Client Updated");
+        store.commit("updateClientById", obj);
+      })
+      .catch((err) => router.push("/login"));
+    closeModal();
+  }
 }
 </script>

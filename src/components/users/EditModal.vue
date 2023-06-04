@@ -72,11 +72,14 @@
 </template>
 
 <script setup lang="ts">
-import { compile, computed, ref } from "vue";
+import { computed, ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
 import { usersApi } from "../../services/users-api";
+import { helpers, email as Email, required } from "@vuelidate/validators";
 import { useRouter } from "vue-router";
+import useVuelidate from "@vuelidate/core";
+import { useToast } from "vue-toastification";
 
 interface Props {
   userId: number;
@@ -92,6 +95,25 @@ const isShowEditModal = ref(false);
 const first_name = ref(user.value.first_name);
 const last_name = ref(user.value.last_name);
 const email = ref(user.value.email);
+const toast = useToast();
+
+const rules = {
+  first_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  last_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  email: {
+    Email: helpers.withMessage("Please enter a valid email", Email),
+    required: helpers.withMessage("This field is required", required),
+  },
+};
+const v$ = useVuelidate(rules, {
+  first_name,
+  last_name,
+  email,
+});
 
 function closeModal() {
   isShowEditModal.value = false;
@@ -101,19 +123,23 @@ function showModal() {
 }
 
 async function EditTask() {
+  v$.value.$validate();
+
   const obj = {
     first_name: first_name.value,
     last_name: last_name.value,
     id: props.userId,
     email: email.value,
   };
-
-  usersApi
-    .changeUserById(props.userId, obj)
-    .then(() => {
-      store.commit("updateUserById", obj);
-    })
-    .catch((err) => router.push("/login"));
-  closeModal();
+  if (!v$.value.$error) {
+    usersApi
+      .changeUserById(props.userId, obj)
+      .then(() => {
+        toast("User Updated");
+        store.commit("updateUserById", obj);
+      })
+      .catch((err) => router.push("/login"));
+    closeModal();
+  }
 }
 </script>

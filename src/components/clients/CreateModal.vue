@@ -25,6 +25,11 @@
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.first_name.$error">{{
+              v$.first_name.$errors[0].$message
+            }}</span>
+          </p>
         </div>
         <div>
           <label
@@ -40,6 +45,11 @@
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.last_name.$error">{{
+              v$.last_name.$errors[0].$message
+            }}</span>
+          </p>
         </div>
         <div>
           <label
@@ -56,6 +66,11 @@
             placeholder="name@company.com"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.email.$error">{{
+              v$.email.$errors[0].$message
+            }}</span>
+          </p>
         </div>
         <div>
           <label
@@ -71,6 +86,11 @@
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.address.$error">{{
+              v$.address.$errors[0].$message
+            }}</span>
+          </p>
         </div>
 
         <div>
@@ -87,15 +107,20 @@
             placeholder="123-45-678"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.phone_number.$error">{{
+              v$.phone_number.$errors[0].$message
+            }}</span>
+          </p>
         </div>
       </div>
     </template>
     <template #footer>
       <button
-        @click="AddItem"
+        @click="AddClient"
         class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
-        Add Item
+        Add Client
       </button>
     </template>
   </Modal>
@@ -106,17 +131,11 @@ import { ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
 import { clientsApi } from "../../services/clients-api";
-import Client from "../../types/Client";
+import { helpers, email as Email, required } from "@vuelidate/validators";
 import CreateClient from "../../types/CreateClient";
 import { router } from "../../routes";
-
-function closeModal() {
-  isShowCreateModal.value = false;
-  ClearAll();
-}
-function showModal() {
-  isShowCreateModal.value = true;
-}
+import useVuelidate from "@vuelidate/core";
+import { useToast } from "vue-toastification";
 
 const isShowCreateModal = ref(false);
 const address = ref("");
@@ -124,7 +143,36 @@ const first_name = ref("");
 const last_name = ref("");
 const phone_number = ref("");
 const email = ref("");
+
 const store = useStore();
+const toast = useToast();
+
+const rules = {
+  first_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  last_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  address: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  phone_number: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  email: {
+    Email: helpers.withMessage("Please enter a valid email", Email),
+    required: helpers.withMessage("This field is required", required),
+  },
+};
+
+const v$ = useVuelidate(rules, {
+  first_name,
+  last_name,
+  address,
+  phone_number,
+  email,
+});
 
 function ClearAll() {
   address.value = "";
@@ -133,8 +181,17 @@ function ClearAll() {
   phone_number.value = "";
   email.value = "";
 }
+function closeModal() {
+  isShowCreateModal.value = false;
+  ClearAll();
+}
+function showModal() {
+  isShowCreateModal.value = true;
+}
 
-async function AddItem() {
+async function AddClient() {
+  v$.value.$validate();
+
   const client: CreateClient = {
     address: address.value,
     first_name: first_name.value,
@@ -143,18 +200,19 @@ async function AddItem() {
     email: email.value,
     company_id: store.state.authModule.auth.company_id,
   };
-  if (
-    address.value &&
-    first_name.value &&
-    last_name.value &&
-    phone_number.value &&
-    email.value
-  ) {
+
+  if (!v$.value.$error) {
     await clientsApi
       .addClient(client)
-      .then(() => store.dispatch("fetchClients"))
-      .catch((err) => router.push("/login"));
+      .then((res) => {
+        store.dispatch("fetchClients");
+        toast.success(res.data);
+      })
+      .catch((err) => {
+        router.push("/login");
+      });
 
+    v$.value.$reset();
     closeModal();
   }
 }

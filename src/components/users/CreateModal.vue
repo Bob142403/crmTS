@@ -3,7 +3,7 @@
     @click="showModal"
     class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
   >
-    Add Task
+    Add User
   </button>
   <Modal v-if="isShowCreateModal" @close="closeModal">
     <template #header>
@@ -25,6 +25,11 @@
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.first_name.$error">{{
+              v$.first_name.$errors[0].$message
+            }}</span>
+          </p>
         </div>
         <div>
           <label
@@ -40,6 +45,11 @@
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.last_name.$error">{{
+              v$.last_name.$errors[0].$message
+            }}</span>
+          </p>
         </div>
         <div>
           <label
@@ -56,15 +66,20 @@
             placeholder="name@company.com"
             required
           />
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.email.$error">{{
+              v$.email.$errors[0].$message
+            }}</span>
+          </p>
         </div>
       </div>
     </template>
     <template #footer>
       <button
-        @click="AddItem"
+        @click="AddUser"
         class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
-        Add Item
+        Add User
       </button>
     </template>
   </Modal>
@@ -77,6 +92,9 @@ import { useStore } from "../../store/store";
 import { usersApi } from "../../services/users-api";
 import CreateUser from "../../types/CreateUser";
 import { useRouter } from "vue-router";
+import { helpers, email as Email, required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+import { useToast } from "vue-toastification";
 
 function closeModal() {
   isShowCreateModal.value = false;
@@ -92,6 +110,25 @@ const last_name = ref("");
 const email = ref("");
 const store = useStore();
 const router = useRouter();
+const toast = useToast();
+
+const rules = {
+  first_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  last_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  email: {
+    Email: helpers.withMessage("Please enter a valid email", Email),
+    required: helpers.withMessage("This field is required", required),
+  },
+};
+const v$ = useVuelidate(rules, {
+  first_name,
+  last_name,
+  email,
+});
 
 function ClearAll() {
   first_name.value = "";
@@ -99,17 +136,22 @@ function ClearAll() {
   email.value = "";
 }
 
-async function AddItem() {
+async function AddUser() {
+  v$.value.$validate();
+
   const user: CreateUser = {
     first_name: first_name.value,
     last_name: last_name.value,
     email: email.value,
     company_id: store.state.authModule.auth.company_id,
   };
-  if (first_name.value && last_name.value && email.value) {
+  if (!v$.value.$error) {
     await usersApi
       .addUser(user)
-      .then(() => store.dispatch("fetchUsers"))
+      .then(() => {
+        toast.success("User Created");
+        store.dispatch("fetchUsers");
+      })
       .catch((err) => router.push("/login"));
     closeModal();
   }
