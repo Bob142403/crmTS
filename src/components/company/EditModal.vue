@@ -43,25 +43,22 @@
 import { computed, ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
-import { useRouter } from "vue-router";
-import { companyApi } from "../../services/company-api";
 import { helpers, required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
-import { useToast } from "vue-toastification";
+import { useUpdateCompany } from "../../hooks/api/company/use-update-company";
 
 interface Props {
   companyId: number;
 }
 
 const store = useStore();
-const router = useRouter();
 
 const props = defineProps<Props>();
 
 const company = computed(() => store.getters.getCompanyById(props.companyId));
 const isShowEditModal = ref(false);
 const name = ref(company.value.name);
-const toast = useToast();
+const updateCompany = useUpdateCompany();
 
 const rules = {
   name: {
@@ -88,13 +85,8 @@ async function EditTask() {
     id: props.companyId,
   };
   if (!v$.value.$error) {
-    companyApi
-      .changeCompanyById(props.companyId, obj)
-      .then(() => {
-        toast("Company Updated");
-        store.commit("updateCompanyById", obj);
-      })
-      .catch((err) => router.push("/login"));
+    await updateCompany(props.companyId, obj);
+
     closeModal();
   }
 }

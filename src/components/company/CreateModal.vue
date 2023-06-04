@@ -41,13 +41,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Modal } from "flowbite-vue";
-import { useStore } from "../../store/store";
-import { useRouter } from "vue-router";
-import { companyApi } from "../../services/company-api";
 import CreateCompany from "../../types/CreateCompany";
 import { required, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
-import { useToast } from "vue-toastification";
+import { useCreateCompany } from "../../hooks/api/company/use-create-company";
 
 function closeModal() {
   isShowCreateModal.value = false;
@@ -59,9 +56,7 @@ function showModal() {
 
 const isShowCreateModal = ref(false);
 const name = ref("");
-const store = useStore();
-const router = useRouter();
-const toast = useToast();
+const createCompany = useCreateCompany();
 
 const rules = {
   name: {
@@ -80,13 +75,8 @@ async function AddCompany() {
     name: name.value,
   };
   if (!v$.value.$error) {
-    await companyApi
-      .addCompany(company)
-      .then(() => {
-        toast.success("Company Created");
-        store.dispatch("fetchCompanies");
-      })
-      .catch((err) => router.push("/login"));
+    await createCompany(company);
+
     name.value = "";
     closeModal();
   }
