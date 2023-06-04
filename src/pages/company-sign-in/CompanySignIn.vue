@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, inject, ref } from "vue";
+import useVuelidate from "@vuelidate/core";
+import { helpers, email as Email, required } from "@vuelidate/validators";
+import { inject, ref } from "vue";
 import { VueCookies } from "vue-cookies";
 import { useRouter } from "vue-router";
 import { authApi } from "../../services/auth-api";
@@ -13,7 +15,17 @@ const email = $cookies?.get("email");
 const password = $cookies?.get("password");
 const id = $cookies?.get("id");
 
+const rules = {
+  company: {
+    required: helpers.withMessage("This field is required", required),
+  },
+};
+
+const v$ = useVuelidate(rules, { company });
+
 async function submitINFO() {
+  v$.value.$validate();
+
   await companyApi.addCompany({ name: company.value });
   await authApi.chooseCompany(id, {
     company_id: company.value,
@@ -47,12 +59,7 @@ async function submitINFO() {
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form
-        class="space-y-6"
-        action="#"
-        method="POST"
-        @submit.prevent="submitINFO"
-      >
+      <form class="space-y-6" @submit.prevent>
         <div>
           <label
             for="company"
@@ -69,11 +76,16 @@ async function submitINFO() {
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
+          <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <span class="font-medium" v-if="v$.company.$error">{{
+              v$.company.$errors[0].$message
+            }}</span>
+          </p>
         </div>
 
         <div>
           <button
-            type="submit"
+            @click="submitINFO"
             class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Add

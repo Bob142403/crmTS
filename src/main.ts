@@ -4,11 +4,19 @@ import App from "./App.vue";
 import { key, store } from "./store/store.js";
 import { router } from "./routes";
 import VueCookies from "vue-cookies";
-import Notifications from "@kyvg/vue3-notification";
+import Toast, { PluginOptions, POSITION } from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
+const options: PluginOptions = {
+  // You can set your default options here
+  position: POSITION.BOTTOM_RIGHT,
+  pauseOnHover: false,
+  timeout: 2000,
+};
 
 createApp(App)
   .use(store, key)
   .use(router)
   .use(VueCookies, { expires: "7d" })
-  .use(Notifications)
+  .use(Toast, options)
   .mount("#app");
