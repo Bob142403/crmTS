@@ -2,13 +2,14 @@ import { useToast } from "vue-toastification";
 import { useStore } from "../../../store/store";
 import { useRouter } from "vue-router";
 import { companyApi } from "../../../services/company-api";
+import CreateCompany from "../../../types/CreateCompany";
 
 export function useCreateCompany() {
   const toast = useToast();
   const store = useStore();
   const router = useRouter();
 
-  return async (body: any) =>
+  return async (body: CreateCompany) =>
     await companyApi
       .addCompany(body)
       .then(() => {

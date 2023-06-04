@@ -46,6 +46,7 @@ import { useStore } from "../../store/store";
 import { helpers, required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import { useUpdateCompany } from "../../hooks/api/company/use-update-company";
+import Company from "../../types/Company";
 
 interface Props {
   companyId: number;
@@ -80,7 +81,7 @@ function showModal() {
 async function EditTask() {
   v$.value.$validate();
 
-  const obj = {
+  const obj: Company = {
     name: name.value,
     id: props.companyId,
   };

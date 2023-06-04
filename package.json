@@ -16,6 +16,7 @@
     "flowbite": "^1.6.5",
     "flowbite-vue": "^0.0.10",
     "jsonwebtoken": "^9.0.0",
+    "swagger-ui-express": "^4.6.3",
     "vue": "^3.3.4",
     "vue-cookies": "^1.8.3",
     "vue-router": "^4.1.6",
