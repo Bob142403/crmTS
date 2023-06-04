@@ -45,6 +45,9 @@ import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
 import { useRouter } from "vue-router";
 import { companyApi } from "../../services/company-api";
+import { helpers, required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+import { useToast } from "vue-toastification";
 
 interface Props {
   companyId: number;
@@ -58,6 +61,17 @@ const props = defineProps<Props>();
 const company = computed(() => store.getters.getCompanyById(props.companyId));
 const isShowEditModal = ref(false);
 const name = ref(company.value.name);
+const toast = useToast();
+
+const rules = {
+  name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+};
+
+const v$ = useVuelidate(rules, {
+  name,
+});
 
 function closeModal() {
   isShowEditModal.value = false;
@@ -67,17 +81,21 @@ function showModal() {
 }
 
 async function EditTask() {
+  v$.value.$validate();
+
   const obj = {
     name: name.value,
     id: props.companyId,
   };
-
-  companyApi
-    .changeCompanyById(props.companyId, obj)
-    .then(() => {
-      store.commit("updateCompanyById", obj);
-    })
-    .catch((err) => router.push("/login"));
-  closeModal();
+  if (!v$.value.$error) {
+    companyApi
+      .changeCompanyById(props.companyId, obj)
+      .then(() => {
+        toast("Company Updated");
+        store.commit("updateCompanyById", obj);
+      })
+      .catch((err) => router.push("/login"));
+    closeModal();
+  }
 }
 </script>

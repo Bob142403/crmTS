@@ -3,7 +3,7 @@
     @click="showModal"
     class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
   >
-    Add Task
+    Add Company
   </button>
   <Modal v-if="isShowCreateModal" @close="closeModal">
     <template #header>
@@ -29,10 +29,10 @@
     </template>
     <template #footer>
       <button
-        @click="AddItem"
+        @click="AddCompany"
         class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
-        Add Item
+        Add Company
       </button>
     </template>
   </Modal>
@@ -45,6 +45,9 @@ import { useStore } from "../../store/store";
 import { useRouter } from "vue-router";
 import { companyApi } from "../../services/company-api";
 import CreateCompany from "../../types/CreateCompany";
+import { required, helpers } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+import { useToast } from "vue-toastification";
 
 function closeModal() {
   isShowCreateModal.value = false;
@@ -58,15 +61,31 @@ const isShowCreateModal = ref(false);
 const name = ref("");
 const store = useStore();
 const router = useRouter();
+const toast = useToast();
 
-async function AddItem() {
+const rules = {
+  name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+};
+
+const v$ = useVuelidate(rules, {
+  name,
+});
+
+async function AddCompany() {
+  v$.value.$validate();
+
   const company: CreateCompany = {
     name: name.value,
   };
-  if (name.value) {
+  if (!v$.value.$error) {
     await companyApi
       .addCompany(company)
-      .then(() => store.dispatch("fetchCompanies"))
+      .then(() => {
+        toast.success("Company Created");
+        store.dispatch("fetchCompanies");
+      })
       .catch((err) => router.push("/login"));
     name.value = "";
     closeModal();

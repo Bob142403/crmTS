@@ -49,6 +49,7 @@
 import { Modal } from "flowbite-vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
 import { companyApi } from "../../services/company-api";
 import { useStore } from "../../store/store";
 
@@ -58,6 +59,7 @@ interface Props {
 
 const store = useStore();
 const router = useRouter();
+const toast = useToast();
 
 const isShowDeleteModal = ref(false);
 
@@ -74,6 +76,7 @@ async function deleteData() {
   await companyApi
     .deleteCompanyById(props.companyId)
     .then(() => {
+      toast.error("Company Deleted");
       store.commit("delCompanyById", props.companyId);
     })
     .catch((err) => router.push("/login"));
