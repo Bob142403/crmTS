@@ -6,7 +6,7 @@ const getApiURL = (path: string) => makeApiURL("company", path);
 
 export const companyApi = {
   getCompanies: async () => await instance.get(getApiURL("/list")),
-  addCompany: async (data: CreateCompany) =>
+  createCompany: async (data: CreateCompany) =>
     await instance.post(getApiURL("create-company"), data),
   deleteCompanyById: async (companyId: number) =>
     await instance.delete(getApiURL(`delete-company/${companyId}`)),

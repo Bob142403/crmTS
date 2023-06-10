@@ -30,7 +30,7 @@ async function submitINFO() {
   let company_id,
     role = "user";
 
-  await companyApi.addCompany({ name: company.value }).then((res) => {
+  await companyApi.createCompany({ name: company.value }).then((res) => {
     role = res.data.role;
     company_id = res.data.id;
   });

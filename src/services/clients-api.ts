@@ -15,6 +15,6 @@ export const clientsApi = {
     await instance.put(getApiURL(`/update-client/${clientId}`), newData),
   getClientById: async (clientId: number) =>
     await instance.get(getApiURL(`/get-client/${clientId}`)),
-  addClient: async (client: CreateClient) =>
+  createClient: async (client: CreateClient) =>
     await instance.post(getApiURL("/create-client"), client),
 };

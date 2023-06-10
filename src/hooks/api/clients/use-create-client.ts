@@ -11,7 +11,7 @@ export function useCreateClient() {
 
   return async (body: CreateClient) =>
     await clientsApi
-      .addClient(body)
+      .createClient(body)
       .then((res) => {
         store.dispatch("fetchClients");
         toast.success(res.data);
