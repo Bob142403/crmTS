@@ -1,3 +1,68 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import { Modal } from "flowbite-vue";
+import { useStore } from "../../store/store";
+import CreateUser from "../../types/CreateUser";
+import { helpers, email as Email, required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+import { useCreateUser } from "../../hooks/api/users/use-create-user";
+
+function closeModal() {
+  isShowCreateModal.value = false;
+  ClearAll();
+}
+function showModal() {
+  isShowCreateModal.value = true;
+}
+
+const isShowCreateModal = ref(false);
+const first_name = ref("");
+const last_name = ref("");
+const email = ref("");
+const store = useStore();
+const createUser = useCreateUser();
+
+const rules = {
+  first_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  last_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  email: {
+    Email: helpers.withMessage("Please enter a valid email", Email),
+    required: helpers.withMessage("This field is required", required),
+  },
+};
+const v$ = useVuelidate(rules, {
+  first_name,
+  last_name,
+  email,
+});
+
+function ClearAll() {
+  first_name.value = "";
+  last_name.value = "";
+  email.value = "";
+}
+
+async function AddUser() {
+  v$.value.$validate();
+
+  const user: CreateUser = {
+    first_name: first_name.value,
+    last_name: last_name.value,
+    email: email.value,
+    company_id: store.state.authModule.auth.company_id,
+  };
+  if (!v$.value.$error) {
+    await createUser(user);
+
+    closeModal();
+  }
+}
+</script>
+
 <template>
   <button
     @click="showModal"
@@ -84,68 +149,3 @@
     </template>
   </Modal>
 </template>
-
-<script setup lang="ts">
-import { ref } from "vue";
-import { Modal } from "flowbite-vue";
-import { useStore } from "../../store/store";
-import CreateUser from "../../types/CreateUser";
-import { helpers, email as Email, required } from "@vuelidate/validators";
-import useVuelidate from "@vuelidate/core";
-import { useCreateUser } from "../../hooks/api/users/use-create-user";
-
-function closeModal() {
-  isShowCreateModal.value = false;
-  ClearAll();
-}
-function showModal() {
-  isShowCreateModal.value = true;
-}
-
-const isShowCreateModal = ref(false);
-const first_name = ref("");
-const last_name = ref("");
-const email = ref("");
-const store = useStore();
-const createUser = useCreateUser();
-
-const rules = {
-  first_name: {
-    required: helpers.withMessage("This field is required", required),
-  },
-  last_name: {
-    required: helpers.withMessage("This field is required", required),
-  },
-  email: {
-    Email: helpers.withMessage("Please enter a valid email", Email),
-    required: helpers.withMessage("This field is required", required),
-  },
-};
-const v$ = useVuelidate(rules, {
-  first_name,
-  last_name,
-  email,
-});
-
-function ClearAll() {
-  first_name.value = "";
-  last_name.value = "";
-  email.value = "";
-}
-
-async function AddUser() {
-  v$.value.$validate();
-
-  const user: CreateUser = {
-    first_name: first_name.value,
-    last_name: last_name.value,
-    email: email.value,
-    company_id: store.state.authModule.auth.company_id,
-  };
-  if (!v$.value.$error) {
-    await createUser(user);
-
-    closeModal();
-  }
-}
-</script>

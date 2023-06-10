@@ -1,3 +1,32 @@
+<script setup lang="ts">
+import { Modal } from "flowbite-vue";
+import { ref } from "vue";
+import { useDeleteUser } from "../../hooks/api/users/use-delete-user";
+
+interface Props {
+  userId: number;
+}
+
+const deleteUser = useDeleteUser();
+
+const isShowDeleteModal = ref(false);
+
+const props = defineProps<Props>();
+
+function closeModal() {
+  isShowDeleteModal.value = false;
+}
+function showModal() {
+  isShowDeleteModal.value = true;
+}
+
+async function deleteData() {
+  await deleteUser(props.userId);
+
+  closeModal();
+}
+</script>
+
 <template>
   <a
     href="#"
@@ -44,32 +73,3 @@
     </template>
   </Modal>
 </template>
-
-<script setup lang="ts">
-import { Modal } from "flowbite-vue";
-import { ref } from "vue";
-import { useDeleteUser } from "../../hooks/api/users/use-delete-user";
-
-interface Props {
-  userId: number;
-}
-
-const deleteUser = useDeleteUser();
-
-const isShowDeleteModal = ref(false);
-
-const props = defineProps<Props>();
-
-function closeModal() {
-  isShowDeleteModal.value = false;
-}
-function showModal() {
-  isShowDeleteModal.value = true;
-}
-
-async function deleteData() {
-  await deleteUser(props.userId);
-
-  closeModal();
-}
-</script>

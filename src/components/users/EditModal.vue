@@ -1,5 +1,69 @@
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import { Modal } from "flowbite-vue";
+import { useStore } from "../../store/store";
+import { helpers, email as Email, required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+import { useUpdateUser } from "../../hooks/api/users/use-update-user";
+
+interface Props {
+  userId: number;
+}
+
+const store = useStore();
+
+const props = defineProps<Props>();
+
+const user = computed(() => store.getters.getUserById(props.userId));
+const isShowEditModal = ref(false);
+const first_name = ref(user.value.first_name);
+const last_name = ref(user.value.last_name);
+const email = ref(user.value.email);
+const updateUser = useUpdateUser();
+
+const rules = {
+  first_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  last_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  email: {
+    Email: helpers.withMessage("Please enter a valid email", Email),
+    required: helpers.withMessage("This field is required", required),
+  },
+};
+const v$ = useVuelidate(rules, {
+  first_name,
+  last_name,
+  email,
+});
+
+function closeModal() {
+  isShowEditModal.value = false;
+}
+function showModal() {
+  isShowEditModal.value = true;
+}
+
+async function EditTask() {
+  v$.value.$validate();
+
+  const obj = {
+    first_name: first_name.value,
+    last_name: last_name.value,
+    id: props.userId,
+    email: email.value,
+  };
+  if (!v$.value.$error) {
+    await updateUser(props.userId, obj);
+
+    closeModal();
+  }
+}
+</script>
+
 <template>
-  <!-- Modal toggle -->
   <a
     href="#"
     class="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-2"
@@ -70,68 +134,3 @@
     </template>
   </Modal>
 </template>
-
-<script setup lang="ts">
-import { computed, ref } from "vue";
-import { Modal } from "flowbite-vue";
-import { useStore } from "../../store/store";
-import { helpers, email as Email, required } from "@vuelidate/validators";
-import useVuelidate from "@vuelidate/core";
-import { useUpdateUser } from "../../hooks/api/users/use-update-user";
-
-interface Props {
-  userId: number;
-}
-
-const store = useStore();
-
-const props = defineProps<Props>();
-
-const user = computed(() => store.getters.getUserById(props.userId));
-const isShowEditModal = ref(false);
-const first_name = ref(user.value.first_name);
-const last_name = ref(user.value.last_name);
-const email = ref(user.value.email);
-const updateUser = useUpdateUser();
-
-const rules = {
-  first_name: {
-    required: helpers.withMessage("This field is required", required),
-  },
-  last_name: {
-    required: helpers.withMessage("This field is required", required),
-  },
-  email: {
-    Email: helpers.withMessage("Please enter a valid email", Email),
-    required: helpers.withMessage("This field is required", required),
-  },
-};
-const v$ = useVuelidate(rules, {
-  first_name,
-  last_name,
-  email,
-});
-
-function closeModal() {
-  isShowEditModal.value = false;
-}
-function showModal() {
-  isShowEditModal.value = true;
-}
-
-async function EditTask() {
-  v$.value.$validate();
-
-  const obj = {
-    first_name: first_name.value,
-    last_name: last_name.value,
-    id: props.userId,
-    email: email.value,
-  };
-  if (!v$.value.$error) {
-    await updateUser(props.userId, obj);
-
-    closeModal();
-  }
-}
-</script>
