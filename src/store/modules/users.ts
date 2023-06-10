@@ -2,7 +2,6 @@ import { Module, Store } from "vuex";
 import { State } from "../store";
 import User from "../../types/User";
 import { usersApi } from "../../services/users-api";
-import { useRouter } from "vue-router";
 
 export interface UsersState {
   users: User[];
@@ -11,11 +10,10 @@ export interface UsersState {
 export const usersModule: Module<UsersState, State> = {
   actions: {
     async fetchUsers(ctx) {
-      usersApi
-        .getUsersByCompanyId(ctx.rootState.authModule.auth.company_id)
-        .then((res) => {
-          ctx.commit("setUsers", res);
-        });
+      usersApi.getUsers().then((res) => {
+        console.log(res);
+        ctx.commit("setUsers", res.data);
+      });
     },
   },
   state: () => ({ users: [] }),

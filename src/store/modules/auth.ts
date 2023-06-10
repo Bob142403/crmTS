@@ -8,7 +8,14 @@ export interface AuthState {
 
 export const authModule: Module<AuthState, State> = {
   state: () => ({
-    auth: { email: "", last_name: "", first_name: "", company_id: 0, id: 0 },
+    auth: {
+      email: "",
+      last_name: "",
+      first_name: "",
+      company_id: 0,
+      id: 0,
+      role: "",
+    },
   }),
   mutations: {
     setAuth: (state, user) => {
@@ -21,6 +28,7 @@ export const authModule: Module<AuthState, State> = {
         first_name: "",
         company_id: 0,
         id: 0,
+        role: "",
       };
     },
   },

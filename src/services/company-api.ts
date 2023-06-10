@@ -12,6 +12,4 @@ export const companyApi = {
     await instance.delete(getApiURL(`delete-company/${companyId}`)),
   changeCompanyById: async (companyId: number, newData: Company) =>
     await instance.put(getApiURL(`update-company/${companyId}`), newData),
-  getCompanyById: async (companyId: number) =>
-    await instance.get(getApiURL(`get-company/${companyId}`)),
 };
