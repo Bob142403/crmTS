@@ -61,7 +61,7 @@ const users = computed(() => {
           <tr
             v-for="user in users"
             :key="user.id"
-            :v-if="user.id != auth.id"
+            :v-show="user.id != auth.id"
             class="bg-white border-b dark:bg-gray-900 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600"
           >
             <th

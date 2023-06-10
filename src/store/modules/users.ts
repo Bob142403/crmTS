@@ -11,7 +11,6 @@ export const usersModule: Module<UsersState, State> = {
   actions: {
     async fetchUsers(ctx) {
       usersApi.getUsers().then((res) => {
-        console.log(res);
         ctx.commit("setUsers", res.data);
       });
     },
