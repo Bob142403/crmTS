@@ -5,6 +5,7 @@ import { inject, ref } from "vue";
 import { VueCookies } from "vue-cookies";
 import { useRouter } from "vue-router";
 import { authApi } from "../../services/auth-api";
+import { instance } from "../../services/axios";
 import { companyApi } from "../../services/company-api";
 
 const company = ref("");
@@ -26,9 +27,16 @@ const v$ = useVuelidate(rules, { company });
 async function submitINFO() {
   v$.value.$validate();
 
-  await companyApi.addCompany({ name: company.value });
+  let company_id,
+    role = "user";
+
+  await companyApi.addCompany({ name: company.value }).then((res) => {
+    role = res.data.role;
+    company_id = res.data.id;
+  });
   await authApi.chooseCompany(id, {
-    company_id: company.value,
+    company_id: company_id,
+    role,
   });
   await authApi
     .signIn({
@@ -36,6 +44,7 @@ async function submitINFO() {
       password,
     })
     .then(async (res) => {
+      instance.defaults.headers.common["Authorization"] = res.data.token;
       localStorage.setItem("token", res.data.token);
       router.push("/");
       company.value = "";

@@ -153,6 +153,7 @@ import {
   email as Email,
   sameAs,
 } from "@vuelidate/validators";
+import { useToast } from "vue-toastification";
 
 const router = useRouter();
 const first_name = ref("");
@@ -160,6 +161,7 @@ const last_name = ref("");
 const email = ref("");
 const password = ref("");
 const confirm_password = ref("");
+const toast = useToast();
 
 const rules = {
   first_name: {
@@ -198,8 +200,9 @@ async function addUser() {
   if (!v$.value.$error) {
     await authApi
       .signUp(user)
-      .then(() => {
-        router.push("/login");
+      .then((res) => {
+        if (res.data == "This email is already Excist") toast(res.data);
+        else router.push("/login");
       })
       .catch((err) => {
         console.log(err);

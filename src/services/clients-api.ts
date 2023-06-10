@@ -1,4 +1,3 @@
-import Client from "../types/Client";
 import CreateClient from "../types/CreateClient";
 import { instance, makeApiURL } from "./axios";
 

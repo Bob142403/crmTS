@@ -4,6 +4,7 @@ interface Auth {
   last_name: string;
   company_id: number;
   id: number;
+  role: string;
 }
 
 export default Auth;

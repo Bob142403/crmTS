@@ -97,6 +97,7 @@ import { authApi } from "../../services/auth-api";
 import { useStore } from "../../store/store";
 import useVuelidate from "@vuelidate/core";
 import { useToast } from "vue-toastification";
+import { instance } from "../../services/axios";
 
 const router = useRouter();
 const email = ref("");
@@ -132,6 +133,7 @@ async function submitINFO() {
           store.commit("setAuth", res.data.user);
           router.push("/company-sign-in");
         } else {
+          instance.defaults.headers.common["Authorization"] = res.data.token;
           localStorage.setItem("token", res.data.token);
           router.push("/");
         }

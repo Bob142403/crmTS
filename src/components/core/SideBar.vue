@@ -57,7 +57,7 @@
                   class="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
                   role="none"
                 >
-                  {{ userInfo.company_id }}
+                  {{ company }}
                 </p>
               </div>
               <ul class="py-1" role="none">
@@ -107,7 +107,7 @@
             <span class="ml-3">Clients</span>
           </a>
         </li>
-        <li>
+        <li v-if="userInfo.role == 'admin' || userInfo.role == 'superadmin'">
           <a
             href="#"
             @click="router.push('/users')"
@@ -130,7 +130,7 @@
             <span class="ml-3">Users</span>
           </a>
         </li>
-        <li>
+        <li v-if="userInfo.role == 'superadmin'">
           <a
             href="#"
             @click="router.push('/companies')"
@@ -165,12 +165,20 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { useStore } from "../../store/store";
-import { computed } from "vue";
+import { computed, onBeforeUpdate, ref } from "vue";
+import { companyApi } from "../../services/company-api";
 
 const router = useRouter();
 const store = useStore();
+const company = ref("");
 
 const userInfo = computed(() => store.state.authModule.auth);
+
+onBeforeUpdate(async () => {
+  const res = await companyApi.getCompanyById(userInfo.value.company_id);
+
+  company.value = res.data.name;
+});
 
 function signOut() {
   localStorage.setItem("token", "");
