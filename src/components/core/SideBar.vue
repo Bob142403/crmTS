@@ -1,3 +1,30 @@
+<script setup lang="ts">
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
+
+import { useRouter } from "vue-router";
+import { useStore } from "../../store/store";
+import { computed, ref } from "vue";
+import { companyApi } from "../../services/company-api";
+
+const router = useRouter();
+const store = useStore();
+const hlp = ref("");
+
+const userInfo = computed(() => store.state.authModule.auth);
+const company = computed(() => {
+  companyApi.getCompanyById(userInfo.value.company_id).then((res) => {
+    if (res.data) hlp.value = res.data.name;
+  });
+  return hlp.value;
+});
+
+function signOut() {
+  localStorage.setItem("token", "");
+  router.push("/login");
+  store.commit("signOut");
+}
+</script>
+
 <template>
   <nav
     class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
@@ -27,55 +54,92 @@
               ></path>
             </svg>
           </button>
+          <a href="https://flowbite.com" class="flex ml-2 md:mr-24">
+            <img
+              src="https://flowbite.com/docs/images/logo.svg"
+              class="h-8 mr-3"
+              alt="FlowBite Logo"
+            />
+            <span
+              class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white"
+              >Flowbite</span
+            >
+          </a>
         </div>
         <div class="flex items-center">
           <div class="flex items-center ml-3">
-            <div>
-              <button
-                type="button"
-                class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                aria-expanded="false"
-                data-dropdown-toggle="dropdown-user"
-              >
-                <span class="sr-only">Open user menu</span>
-                <img
-                  class="w-8 h-8 rounded-full"
-                  src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                  alt="user photo"
-                />
-              </button>
-            </div>
-            <div
-              class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-              id="dropdown-user"
-            >
-              <div class="px-4 py-3" role="none">
-                <p class="text-sm text-gray-900 dark:text-white" role="none">
-                  {{ userInfo.first_name + " " + userInfo.last_name }}
-                </p>
-                <p
-                  class="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
-                  role="none"
+            <Menu as="div" class="relative ml-3">
+              <div>
+                <MenuButton
+                  class="flex rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
-                  {{ company }}
-                </p>
-              </div>
-              <ul class="py-1" role="none">
-                <li>
-                  <a
-                    @click="signOut"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
-                    role="menuitem"
-                    >Sign out</a
+                  <span class="sr-only">Open user menu</span>
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    class="h-8 w-8 rounded-full"
                   >
-                </li>
-              </ul>
-            </div>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                </MenuButton>
+              </div>
+              <transition
+                enter-active-class="transition ease-out duration-100"
+                enter-from-class="transform opacity-0 scale-95"
+                enter-to-class="transform opacity-100 scale-100"
+                leave-active-class="transition ease-in duration-75"
+                leave-from-class="transform opacity-100 scale-100"
+                leave-to-class="transform opacity-0 scale-95"
+              >
+                <MenuItems
+                  class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                >
+                  <MenuItem :disabled="true">
+                    <div class="px-4 py-3" role="none">
+                      <p
+                        class="text-sm text-gray-900 dark:text-white"
+                        role="none"
+                      >
+                        {{ userInfo.first_name + " " + userInfo.last_name }}
+                      </p>
+                      <p
+                        class="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
+                        role="none"
+                      >
+                        Company: {{ company }}
+                      </p>
+                    </div>
+                  </MenuItem>
+                  <hr />
+                  <MenuItem>
+                    <ul class="py-1" role="none">
+                      <li>
+                        <a
+                          @click="signOut"
+                          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+                          role="menuitem"
+                          >Sign out</a
+                        >
+                      </li>
+                    </ul>
+                  </MenuItem>
+                </MenuItems>
+              </transition>
+            </Menu>
           </div>
         </div>
       </div>
     </div>
   </nav>
+
   <aside
     id="logo-sidebar"
     class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
@@ -161,28 +225,3 @@
     <slot></slot>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useRouter } from "vue-router";
-import { useStore } from "../../store/store";
-import { computed, onBeforeUpdate, ref } from "vue";
-import { companyApi } from "../../services/company-api";
-
-const router = useRouter();
-const store = useStore();
-const company = ref("");
-
-const userInfo = computed(() => store.state.authModule.auth);
-
-onBeforeUpdate(async () => {
-  const res = await companyApi.getCompanyById(userInfo.value.company_id);
-
-  company.value = res.data.name;
-});
-
-function signOut() {
-  localStorage.setItem("token", "");
-  router.push("/login");
-  store.commit("signOut");
-}
-</script>

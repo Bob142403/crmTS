@@ -1,5 +1,6 @@
 <template>
   <side-bar><router-view></router-view></side-bar>
+  
 </template>
 
 <script setup lang="ts">
