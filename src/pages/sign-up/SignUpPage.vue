@@ -1,3 +1,72 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { authApi } from "../../services/auth-api";
+import { useVuelidate } from "@vuelidate/core";
+import {
+  required,
+  helpers,
+  email as Email,
+  sameAs,
+} from "@vuelidate/validators";
+import { useToast } from "vue-toastification";
+
+const router = useRouter();
+const first_name = ref("");
+const last_name = ref("");
+const email = ref("");
+const password = ref("");
+const confirm_password = ref("");
+const toast = useToast();
+
+const rules = {
+  first_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  last_name: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  email: {
+    required: helpers.withMessage("Please enter a valid email", Email),
+  },
+  password: {
+    required: helpers.withMessage("This field is required", required),
+  },
+  confirm_password: {
+    sameAs: helpers.withMessage("Passwords must match", sameAs(password)),
+  },
+};
+
+const v$ = useVuelidate(rules, {
+  first_name,
+  last_name,
+  email,
+  password,
+  confirm_password,
+});
+
+async function addUser() {
+  v$.value.$validate();
+  const user = {
+    first_name: first_name.value,
+    last_name: last_name.value,
+    email: email.value,
+    password: password.value,
+  };
+  if (!v$.value.$error) {
+    await authApi
+      .signUp(user)
+      .then((res) => {
+        if (res.data == "This email is already Excist") toast(res.data);
+        else router.push("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+}
+</script>
+
 <template>
   <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -141,72 +210,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { authApi } from "../../services/auth-api";
-import { useVuelidate } from "@vuelidate/core";
-import {
-  required,
-  helpers,
-  email as Email,
-  sameAs,
-} from "@vuelidate/validators";
-import { useToast } from "vue-toastification";
-
-const router = useRouter();
-const first_name = ref("");
-const last_name = ref("");
-const email = ref("");
-const password = ref("");
-const confirm_password = ref("");
-const toast = useToast();
-
-const rules = {
-  first_name: {
-    required: helpers.withMessage("This field is required", required),
-  },
-  last_name: {
-    required: helpers.withMessage("This field is required", required),
-  },
-  email: {
-    required: helpers.withMessage("Please enter a valid email", Email),
-  },
-  password: {
-    required: helpers.withMessage("This field is required", required),
-  },
-  confirm_password: {
-    sameAs: helpers.withMessage("Passwords must match", sameAs(password)),
-  },
-};
-
-const v$ = useVuelidate(rules, {
-  first_name,
-  last_name,
-  email,
-  password,
-  confirm_password,
-});
-
-async function addUser() {
-  v$.value.$validate();
-  const user = {
-    first_name: first_name.value,
-    last_name: last_name.value,
-    email: email.value,
-    password: password.value,
-  };
-  if (!v$.value.$error) {
-    await authApi
-      .signUp(user)
-      .then((res) => {
-        if (res.data == "This email is already Excist") toast(res.data);
-        else router.push("/login");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-}
-</script>

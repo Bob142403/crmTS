@@ -1,3 +1,63 @@
+<script setup lang="ts">
+import { helpers, email as Email, required } from "@vuelidate/validators";
+import { inject, ref } from "vue";
+import { VueCookies } from "vue-cookies";
+import { useRouter } from "vue-router";
+import { authApi } from "../../services/auth-api";
+import { useStore } from "../../store/store";
+import useVuelidate from "@vuelidate/core";
+import { useToast } from "vue-toastification";
+import { instance } from "../../services/axios";
+
+const router = useRouter();
+const email = ref("");
+const password = ref("");
+const store = useStore();
+const $cookies = inject<VueCookies>("$cookies");
+const toast = useToast();
+
+const rules = {
+  email: {
+    required: helpers.withMessage("Please Enter a valid email", Email),
+  },
+  password: {
+    required: helpers.withMessage("Please Enter a Password", required),
+  },
+};
+
+const v$ = useVuelidate(rules, {
+  email,
+  password,
+});
+
+async function submitINFO() {
+  v$.value.$validate();
+  if (!v$.value.$error) {
+    await authApi
+      .signIn({ email: email.value, password: password.value })
+      .then(async (res) => {
+        if (!res.data.user.company_id) {
+          $cookies?.set("email", email.value);
+          $cookies?.set("password", password.value);
+          $cookies?.set("id", res.data.user.id);
+          store.commit("setAuth", res.data.user);
+          router.push("/company-sign-in");
+        } else {
+          instance.defaults.headers.common["Authorization"] = res.data.token;
+          localStorage.setItem("token", res.data.token);
+          router.push("/");
+        }
+        email.value = "";
+        password.value = "";
+      })
+      .catch((err) => {
+        if (!err.response) toast.error(`${err.message}`);
+        else toast.error(`${err.response.data}`);
+      });
+  }
+}
+</script>
+
 <template>
   <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -87,63 +147,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { helpers, email as Email, required } from "@vuelidate/validators";
-import { inject, ref } from "vue";
-import { VueCookies } from "vue-cookies";
-import { useRouter } from "vue-router";
-import { authApi } from "../../services/auth-api";
-import { useStore } from "../../store/store";
-import useVuelidate from "@vuelidate/core";
-import { useToast } from "vue-toastification";
-import { instance } from "../../services/axios";
-
-const router = useRouter();
-const email = ref("");
-const password = ref("");
-const store = useStore();
-const $cookies = inject<VueCookies>("$cookies");
-const toast = useToast();
-
-const rules = {
-  email: {
-    required: helpers.withMessage("Please Enter a valid email", Email),
-  },
-  password: {
-    required: helpers.withMessage("Please Enter a Password", required),
-  },
-};
-
-const v$ = useVuelidate(rules, {
-  email,
-  password,
-});
-
-async function submitINFO() {
-  v$.value.$validate();
-  if (!v$.value.$error) {
-    await authApi
-      .signIn({ email: email.value, password: password.value })
-      .then(async (res) => {
-        if (!res.data.user.company_id) {
-          $cookies?.set("email", email.value);
-          $cookies?.set("password", password.value);
-          $cookies?.set("id", res.data.user.id);
-          store.commit("setAuth", res.data.user);
-          router.push("/company-sign-in");
-        } else {
-          instance.defaults.headers.common["Authorization"] = res.data.token;
-          localStorage.setItem("token", res.data.token);
-          router.push("/");
-        }
-        email.value = "";
-        password.value = "";
-      })
-      .catch((err) => {
-        if (!err.response) toast.error(`${err.message}`);
-        else toast.error(`${err.response.data}`);
-      });
-  }
-}
-</script>

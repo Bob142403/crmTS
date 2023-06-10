@@ -1,3 +1,41 @@
+<script setup lang="ts">
+import CreateModal from "../../components/clients/CreateModal.vue";
+import EditModal from "../../components/clients/EditModal.vue";
+import DeleteModal from "../../components/clients/DeleteModal.vue";
+import WatchModal from "../../components/clients/WatchModal.vue";
+
+import { computed, onMounted } from "vue";
+import { useStore } from "../../store/store";
+import { clientsApi } from "../../services/clients-api";
+import { useRouter } from "vue-router";
+import { authApi } from "../../services/auth-api";
+
+const router = useRouter();
+const store = useStore();
+
+onMounted(async () => {
+  await authApi
+    .auth()
+    .then((res) => {
+      store.commit("setAuth", res.data);
+    })
+    .catch((err) => {
+      router.push("/login");
+    });
+
+  await clientsApi
+    .getClients()
+    .then((res) => {
+      store.commit("setClient", res.data);
+    })
+    .catch((err) => {
+      router.push("/login");
+    });
+});
+
+const data = computed(() => store.getters.getClients);
+</script>
+
 <template>
   <CreateModal></CreateModal>
   <div
@@ -47,43 +85,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import CreateModal from "../../components/clients/CreateModal.vue";
-import EditModal from "../../components/clients/EditModal.vue";
-import DeleteModal from "../../components/clients/DeleteModal.vue";
-import WatchModal from "../../components/clients/WatchModal.vue";
-
-import { computed, onMounted } from "vue";
-import { useStore } from "../../store/store";
-import { clientsApi } from "../../services/clients-api";
-import { useRouter } from "vue-router";
-import { authApi } from "../../services/auth-api";
-
-const router = useRouter();
-const store = useStore();
-
-onMounted(async () => {
-  await authApi
-    .auth()
-    .then((res) => {
-      store.commit("setAuth", res.data);
-    })
-    .catch((err) => {
-      router.push("/login");
-    });
-
-  await clientsApi
-    .getClients()
-    .then((res) => {
-      store.commit("setClient", res.data);
-    })
-    .catch((err) => {
-      router.push("/login");
-    });
-});
-
-const data = computed(() => store.getters.getClients);
-</script>
-
-<style></style>
