@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useVuelidate from "@vuelidate/core";
-import { helpers, email as Email, required } from "@vuelidate/validators";
+import { helpers, required } from "@vuelidate/validators";
 import { inject, ref } from "vue";
 import { VueCookies } from "vue-cookies";
 import { useRouter } from "vue-router";
