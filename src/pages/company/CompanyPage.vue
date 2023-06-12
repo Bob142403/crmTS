@@ -55,7 +55,7 @@ const companies = computed(() => {
           <tr
             v-for="company in companies"
             :key="company.id"
-            class="bg-white border-b dark:bg-gray-900 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600"
+            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600"
           >
             <th
               scope="row"

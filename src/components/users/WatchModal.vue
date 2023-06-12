@@ -34,7 +34,7 @@ function closeModal() {
   >
   <Modal v-if="isShowWatchModal" @close="closeModal" size="xs">
     <template #header>
-      <div class="flex items-center text-lg">Info</div>
+      <div class="flex items-center text-lg text-gray-900 dark:text-white">Info</div>
     </template>
     <template #body>
       <div class="space-y-3">

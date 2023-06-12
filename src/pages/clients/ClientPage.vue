@@ -59,11 +59,11 @@ const data = computed(() => store.getters.getClients);
           <tr
             v-for="arr in data"
             :key="arr.id"
-            class="bg-white border-b dark:bg-gray-900 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600"
+            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600"
           >
             <th
               scope="row"
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+              class="px-6 py-4 font-medium text-gray-800 whitespace-nowrap dark:text-white"
             >
               {{ arr["first_name"] }}
             </th>

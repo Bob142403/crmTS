@@ -7,7 +7,7 @@
   >
   <Modal v-if="isShowEditModal" @close="closeModal">
     <template #header>
-      <div class="flex items-center text-lg">Modal</div>
+      <div class="flex items-center text-lg text-gray-900 dark:text-white">Modal</div>
     </template>
     <template #body>
       <div class="space-y-6">
