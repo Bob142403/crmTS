@@ -13,7 +13,7 @@ export function useCreateUser() {
     await usersApi
       .addUser(body)
       .then((res) => {
-        toast.success("User Created");
+        toast(res.data);
         store.dispatch("fetchUsers");
       })
       .catch((err) => {

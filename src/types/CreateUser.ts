@@ -4,4 +4,5 @@ export default interface CreateUser {
   email: string;
   id?: number;
   company_id?: number;
+  role: string;
 }

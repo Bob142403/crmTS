@@ -14,7 +14,7 @@ export function useCreateClient() {
       .createClient(body)
       .then((res) => {
         store.dispatch("fetchClients");
-        toast.success(res.data);
+        toast(res.data);
         return res;
       })
       .catch((err) => {

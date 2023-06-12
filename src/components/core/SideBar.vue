@@ -19,7 +19,17 @@ const company = computed(() => {
 });
 
 function changeMode() {
-  document.documentElement.classList.add("dark");
+  document.getElementById("theme-toggle-dark-icon")?.classList.toggle("hidden");
+  document
+    .getElementById("theme-toggle-light-icon")
+    ?.classList.toggle("hidden");
+  if (
+    document
+      .getElementById("theme-toggle-dark-icon")
+      ?.classList.contains("hidden")
+  )
+    document.documentElement.classList.remove("dark");
+  else document.documentElement.classList.add("dark");
 }
 
 function signOut() {
@@ -72,17 +82,15 @@ function signOut() {
         </div>
         <div class="flex items-center">
           <div class="flex items-center ml-3">
-            <button type="button" @click="changeMode">sdfsdfds</button>
             <button
-              data-tooltip-target="table-striped-rows-example-toggle-dark-mode-tooltip"
+              id="theme-toggle"
               type="button"
-              data-toggle-dark="dark"
-              class="flex items-center p-2 mr-2 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg toggle-dark-state-example hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 dark:bg-gray-800 focus:outline-none dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+              @click="changeMode"
+              class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
             >
               <svg
-                aria-hidden="true"
-                data-toggle-icon="moon"
-                class="w-4 h-4 hidden"
+                id="theme-toggle-dark-icon"
+                class="hidden w-5 h-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -92,9 +100,8 @@ function signOut() {
                 ></path>
               </svg>
               <svg
-                aria-hidden="true"
-                data-toggle-icon="sun"
-                class="w-4 h-4"
+                id="theme-toggle-light-icon"
+                class="w-5 h-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +112,6 @@ function signOut() {
                   clip-rule="evenodd"
                 ></path>
               </svg>
-              <span class="sr-only">Toggle dark/light mode</span>
             </button>
             <Menu as="div" class="relative ml-3">
               <div>

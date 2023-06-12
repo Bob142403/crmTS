@@ -12,8 +12,8 @@ export function useCreateCompany() {
   return async (body: CreateCompany) =>
     await companyApi
       .createCompany(body)
-      .then(() => {
-        toast.success("Company Created");
+      .then((res) => {
+        toast(res.data);
         store.dispatch("fetchCompanies");
       })
       .catch((err) => {
