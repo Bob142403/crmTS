@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { Modal } from "flowbite-vue";
 import { useStore } from "../../store/store";
 import CreateUser from "../../types/CreateUser";
@@ -10,6 +10,7 @@ import { useCreateUser } from "../../hooks/api/users/use-create-user";
 function closeModal() {
   isShowCreateModal.value = false;
   ClearAll();
+  v$.value.$reset();
 }
 function showModal() {
   isShowCreateModal.value = true;
@@ -19,9 +20,11 @@ const isShowCreateModal = ref(false);
 const first_name = ref("");
 const last_name = ref("");
 const email = ref("");
-const role = ref("");
+const role = ref("No Role");
 const store = useStore();
 const createUser = useCreateUser();
+
+const auth = computed(() => store.state.authModule.auth);
 
 const rules = {
   first_name: {
@@ -45,6 +48,7 @@ function ClearAll() {
   first_name.value = "";
   last_name.value = "";
   email.value = "";
+  role.value = "No Role";
 }
 
 async function AddUser() {
@@ -60,7 +64,6 @@ async function AddUser() {
   if (!v$.value.$error) {
     await createUser(user);
 
-    v$.value.$reset();
     closeModal();
   }
 }
@@ -153,16 +156,18 @@ async function AddUser() {
             v-model="role"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
-            <option selected>Choose a country</option>
+            <option selected>No Role</option>
             <option value="user">User</option>
-            <option value="admin">Admin</option>
-            <option value="superadmin">SuperAdmin</option>
+            <option
+              value="admin"
+              v-if="auth.role == 'admin' || auth.role == 'superadmin'"
+            >
+              Admin
+            </option>
+            <option value="superadmin" v-if="auth.role == 'superadmin'">
+              SuperAdmin
+            </option>
           </select>
-          <!-- <p class="mt-2 text-sm text-red-600 dark:text-red-500">
-            <span class="font-medium" v-if="v$.email.$error">{{
-              v$.email.$errors[0].$message
-            }}</span>
-          </p> -->
         </div>
       </div>
     </template>
